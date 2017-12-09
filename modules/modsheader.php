@@ -81,6 +81,12 @@ Module::register(array(
 ));
 
 Module::register(array(
+    'class'         => 'Award',
+    'filesRunTime'  => array(),
+    'filesLoadTime' => array('awards/header.php', 'awards/class_award.php')
+));
+
+Module::register(array(
     'class'         => 'UPLOAD_BOTOCS',
     'filesRunTime'  => array('leegmgr/class_match_botocs.php'),
     'filesLoadTime' => array('leegmgr/class_upload_botocs.php')

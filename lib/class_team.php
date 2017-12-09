@@ -46,7 +46,7 @@ class Team
     public $rdy               = 1; // Ready bool.
     public $imported          = false;
     public $is_retired        = 0;
-    
+
     public $value = 0; public $tv = 0; # Identical.
     public $ff_bought = 0;
 
@@ -76,11 +76,11 @@ class Team
         unset($this->retired); // We use $this->is_retired instead.
         $this->imported = ($this->imported == 1); // Make boolean.
         $this->value = $this->tv;
-        
+
         return true;
     }
 
-    public function doubleRRprice() 
+    public function doubleRRprice()
     {
         global $rules;
         setupGlobalVars(T_SETUP_GLOBAL_VARS__LOAD_LEAGUE_SETTINGS, array('lid' => $this->f_lid)); // Load correct $rules for league.
@@ -109,7 +109,7 @@ class Team
 #        $query = "UPDATE teams SET owned_by_coach_id = $cid WHERE team_id = $this->team_id";
 #        return mysql_query($query) && ($this->owned_by_coach_id = $cid) && SQLTriggers::run(T_SQLTRIG_TEAM_UPDATE_CHILD_RELS, array('id' => $this->team_id, 'obj' => $this));
 #    }
-    
+
     public function getPlayers() {
         $this->_players = array();
         $result = mysql_query("SELECT player_id FROM players WHERE owned_by_team_id = $this->team_id ORDER BY nr ASC, name ASC");
@@ -122,7 +122,7 @@ class Team
     }
 
     public function getWonTours() {
-    
+
         // Returns an array of tournament objects for those tournaments this team has won.
         return array_map(create_function('$t', 'return new Tour($t->tour_id);'), get_rows('tours', array('tour_id'), array("winner = $this->team_id")));
     }
@@ -372,12 +372,12 @@ class Team
     }
 
     public function isPlayerBuyable($pos_id) {
-        
-        /* 
-            Checks whether maximum number of allowed positionals is reached. 
+
+        /*
+            Checks whether maximum number of allowed positionals is reached.
         */
-        
-        $query = "SELECT IFNULL(COUNT(*) < qty, TRUE) FROM players, game_data_players 
+
+        $query = "SELECT IFNULL(COUNT(*) < qty, TRUE) FROM players, game_data_players
             WHERE f_pos_id = pos_id AND owned_by_team_id = $this->team_id AND f_pos_id = $pos_id AND date_died IS NULL AND date_sold IS NULL";
         $result = mysql_query($query);
         $row = mysql_fetch_row($result);
@@ -387,22 +387,22 @@ class Team
     public function isPlayerPosValid($pos_id) {
 
         // Is $pos_id a valid position for this team's race?
-        
+
         global $DEA;
-        
+
         foreach ($DEA[$this->f_rname]['players'] as $pos => $desc) {
             if ($desc['pos_id'] == $pos_id) {
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
     public function isPlayerNumberOccupied($nr) {
         return SQLBoolEval("SELECT COUNT(*) FROM players WHERE owned_by_team_id = $this->team_id AND nr = $nr AND date_sold IS NULL AND date_died IS NULL AND status != ".DEAD);
     }
-    
+
     public function isJMLimitReached() {
         global $rules;
         setupGlobalVars(T_SETUP_GLOBAL_VARS__LOAD_LEAGUE_SETTINGS, array('lid' => $this->f_lid)); // Load correct $rules for league.
@@ -425,7 +425,7 @@ class Team
 
         return $tours;
     }
-    
+
     public function getFreePlayerNr()
     {
         global $T_ALLOWED_PLAYER_NR;
@@ -460,7 +460,7 @@ class Team
         list($retstatus, $error) = $img->save($name);
         return array($retstatus, $error);
     }
-    
+
     public function deleteLogo() {
         $img = new ImageSubSys(IMGTYPE_TEAMLOGO, $this->team_id);
         return $img->delete();
@@ -468,7 +468,7 @@ class Team
 
     public function deleteStadiumPic() {
         $img = new ImageSubSys(IMGTYPE_TEAMSTADIUM, $this->team_id);
-        return $img->delete();    
+        return $img->delete();
     }
 
     public function writeNews($txt) {
@@ -487,16 +487,16 @@ class Team
         $news = new TeamNews($news_id);
         return $news->edit($new_txt);
     }
-    
+
     // Run this after having imported THIS team.
     public function postImportSync() {
         return mysql_query("CALL match_sync(0,0,$this->team_id,$this->team_id,0)");
     }
-    
+
     public function allowEdit() {
         global $coach;
-        return is_object($coach) 
-            && ($this->owned_by_coach_id == $coach->coach_id || $coach->mayManageObj(T_OBJ_TEAM, $this->team_id)) 
+        return is_object($coach)
+            && ($this->owned_by_coach_id == $coach->coach_id || $coach->mayManageObj(T_OBJ_TEAM, $this->team_id))
             && !$this->is_retired;
     }
 
@@ -504,7 +504,7 @@ class Team
      * Statics
      ***************/
 
-    public static function exists($id) 
+    public static function exists($id)
     {
         $result = mysql_query("SELECT COUNT(*) FROM teams WHERE team_id = $id");
         list($CNT) = mysql_fetch_row($result);
@@ -519,7 +519,7 @@ class Team
 
         $teams = array();
         $where = array();
-        if ($race_id !== false) { 
+        if ($race_id !== false) {
             $where[] = "f_race_id = $race_id";
         }
         if (!empty($f_lids)) {
@@ -539,6 +539,24 @@ class Team
         }
 
         return $teams;
+    }
+
+    public static function getTeamPlayers($team_id) {
+        /**
+         * Returns an array of player IDs and names for a particular team
+         */
+
+        $query = "SELECT player_id, name FROM players WHERE owned_by_team_id = $team_id";
+        $results = mysql_query($query);
+
+        $players = array();
+        if (mysql_num_rows($results) > 0) {
+            while ($player = mysql_fetch_assoc($results)) {
+                $players[$player['player_id']] = $player['name'];
+            }
+        }
+
+        return $players;
     }
 
     const T_CREATE_SUCCESS = 0;
@@ -583,7 +601,7 @@ class Team
         $EXPECTED = self::$createEXPECTED;
         sort($EXPECTED);
         ksort($input);
-        
+
         $errors = array(
             self::T_CREATE_ERROR__UNEXPECTED_INPUT => $EXPECTED !== array_keys($input),
             self::T_CREATE_ERROR__INVALID_RACE     => !in_array((int) $input['f_race_id'], array_keys($raceididx)),
@@ -595,7 +613,7 @@ class Team
         foreach ($errors as $exitStatus => $halt) {
             if ($halt) return array($exitStatus, null);
         }
-            
+
         $input['name'] = "'".mysql_real_escape_string($input['name'])."'"; # Need to quote strings when using INSERT statement.
 
         $query = "INSERT INTO teams (".implode(',',$EXPECTED).") VALUES (".implode(',', $input).")";
@@ -606,9 +624,9 @@ class Team
             self::$T_CREATE_SQL_ERROR['error'] = mysql_error();
             return array(self::T_CREATE_ERROR__SQL_QUERY_FAIL, null);
         }
-        
+
         SQLTriggers::run(T_SQLTRIG_TEAM_NEW, array('id' => $tid, 'obj' => new self($tid)));
-        
+
         return array(self::T_CREATE_SUCCESS, $tid);
     }
 }

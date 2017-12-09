@@ -29,6 +29,8 @@ $settings['modules_enabled'] = array(
     'Scheduler'          => false, # Alternative match scheduler
     'LeaguePref'         => true, # Allows dynamic configuration of league preferences
     'TeamCreator'        => true, # Allows coaches to create teams quickly
+    // The below modules are custom created
+    'Award'              => true, # Tournament awards list
 );
 
 /*****************

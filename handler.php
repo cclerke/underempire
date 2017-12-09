@@ -88,6 +88,11 @@ switch ($_GET['type'])
         Module::run('Prize', array('makeList'));
         break;
 
+    /* Awards */
+    case 'award':
+        Module::run('Award', array('makeList'));
+        break;
+
     /* Gallery */
     case 'gallery':
         Module::run('Gallery', array());
@@ -147,13 +152,13 @@ switch ($_GET['type'])
         break;
 
     /* Team strength compare */
-    
+
     case 'teamcompare':
         Module::run('TeamCompare', array());
         break;
 
     /* Cemetery */
-    
+
     case 'cemetery':
         if (isset($_GET['tid'])) {
             Module::run('Cemetery', array((int) $_GET['tid']));
@@ -166,7 +171,7 @@ switch ($_GET['type'])
     /* PDF Match Report */
     case 'pdfmatchreport':
           $argv = array();
-          if ( isset($_GET['tid1']) && isset($_GET['tid2']) && isset($_GET['mid']) && 
+          if ( isset($_GET['tid1']) && isset($_GET['tid2']) && isset($_GET['mid']) &&
             is_numeric($_GET['tid1']) && is_numeric($_GET['tid2']) && is_numeric($_GET['mid'])) {
             $argv = array((int) $_GET['tid1'], (int) $_GET['tid2'], (int) $_GET['mid']);
           }
@@ -219,7 +224,7 @@ switch ($_GET['type'])
 		if (isset($_POST['subtype'])) {
 			$subtype = $_POST['subtype'];
 		}
-		
+
 		if ($subtype != '') {
 			switch($subtype) {
 				case 'apa_schedule_available': {
@@ -256,10 +261,10 @@ switch ($_GET['type'])
 		} else {
 			Module::run('Scheduler', array());
 		}
-		
+
         break;
 	case 'scheduler_apa_schedule_available':
-		
+
 		break;
     default:
         fatal("Sorry. I don't know what the type '$_GET[type]' means.\n");
