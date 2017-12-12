@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
- 
+
 // Player number restrictions.
 define('T_MAX_PLAYER_NR', 100);
 $T_RESERVED_PLAYER_NR = array();
@@ -36,8 +36,8 @@ define('PLAYER_TYPE_NORMAL',  1);
 define('PLAYER_TYPE_JOURNEY', 2);
 
 $skillcats = array(
-    'N' => array('DEA_idx' => 'norm', 'obj_idx' => 'ach_nor_skills'), 
-    'D' => array('DEA_idx' => 'doub', 'obj_idx' => 'ach_dob_skills'), 
+    'N' => array('DEA_idx' => 'norm', 'obj_idx' => 'ach_nor_skills'),
+    'D' => array('DEA_idx' => 'doub', 'obj_idx' => 'ach_dob_skills'),
     'E' => array('DEA_idx' => null,   'obj_idx' => 'extra_skills'),
 );
 
@@ -46,7 +46,7 @@ $CHR_CONV = array(MA => 'ma', AG => 'ag', AV => 'av', ST => 'st');
 class Player
 {
     /***************
-     * Properties 
+     * Properties
      ***************/
 
     // MySQL stored information
@@ -70,7 +70,7 @@ class Player
     public $extra_spp = 0;
     public $extra_val = 0;
     public $may_buy_new_skill = 0;
-    
+
     public $value = 0;
     public $date_died = '';
 
@@ -79,7 +79,7 @@ class Player
     public $ag = 0;
     public $av = 0;
     public $st = 0;
-    
+
     // Unadjusted Characteristics (adjusted limits are the 1/10 limit and the def +/- 2 limit)
     public $ma_ua = 0;
     public $ag_ua = 0;
@@ -111,16 +111,16 @@ class Player
     public $icon = "";
     public $qty = 0;
     public $choosable_skills = array('norm' => array(), 'doub' => array(), 'chr' => array());
-    
+
     // Relations
     public $f_tname = "";
     public $f_cid = 0;
     public $f_cname = "";
     public $f_rid = 0;
     public $f_rname = "";
-        
+
     /***************
-     * Methods 
+     * Methods
      ***************/
 
     function __construct($player_id) {
@@ -129,58 +129,58 @@ class Player
 
         // Get relaveant store game data.
         $result = mysql_query("SELECT player_id,
-            game_data_players.qty AS 'qty', game_data_players.pos AS 'pos', game_data_players.skills AS 'def_skills', 
+            game_data_players.qty AS 'qty', game_data_players.pos AS 'pos', game_data_players.skills AS 'def_skills',
             game_data_players.ma AS 'def_ma', game_data_players.st AS 'def_st', game_data_players.ag AS 'def_ag', game_data_players.av AS 'def_av'
             FROM players, game_data_players WHERE player_id = $player_id AND f_pos_id = pos_id");
         foreach (mysql_fetch_assoc($result) as $col => $val) {
             $this->$col = ($val) ? $val : 0;
         }
         $this->position = $this->pos;
-        
-        /* 
+
+        /*
             Set general stats.
         */
 
         $this->setStats(false,false,false);
-        
+
         $this->def_skills = empty($this->def_skills) ? array() : explode(',', $this->def_skills);
         $this->setSkills();
-        
+
         $this->is_dead              = ($this->status == DEAD);
         $this->is_mng               = !in_array($this->status, array(NONE, DEAD));
         $this->is_sold              = (bool) $this->date_sold;
         $this->is_journeyman        = ($this->type == PLAYER_TYPE_JOURNEY);
         $this->is_journeyman_used   = ($this->type == PLAYER_TYPE_JOURNEY) && ($this->mv_played > 0);
-        
+
         /*
             Misc
         */
-        
+
         $this->icon = PLAYER_ICONS.'/' . $DEA[$this->f_rname]['players'][$this->pos]['icon'] . '.gif';
-        
+
         if (empty($this->name)) {
             $this->name = 'Unnamed';
         }
-        
+
         if ($this->type == PLAYER_TYPE_JOURNEY) { # Check if player is journeyman like this - don't assume setStatusses() has ben called setting $this->is_journeyman.
             $this->position .= ' [J]';
             $this->def_skills[] = 99; # Loner.
         }
-        
+
         $this->current_skills = $this->getSkillsStr(true);
         $this->may_buy_new_skill = $this->mayHaveNewSkill();
         $this->setChoosableSkills();
     }
-    
+
     public function setStats($node, $node_id, $set_avg = false)
     {
         foreach (Stats::getAllStats(T_OBJ_PLAYER, $this->player_id, $node, $node_id, $set_avg) as $key => $val) {
             $this->$key = $val;
         }
-        
+
         return true;
     }
-    
+
     public function setSkills() {
         global $skillcats;
         foreach ($skillcats as $t => $grp) {
@@ -189,12 +189,12 @@ class Player
             $this->{$grp['obj_idx']} = empty($row[0]) ? array() : explode(',', $row[0]);
         }
     }
-    
+
     public function setChoosableSkills() {
 
         global $DEA, $skillarray, $skillcats, $IllegalSkillCombinations, $rules;
         # Var. format: "$IllegalSkillCombinations as $hasSkill => $dropSkills"
-        
+
         $this->setSkills();
         $current_skills = array_merge($this->def_skills, $this->extra_skills, $this->ach_nor_skills, $this->ach_dob_skills);
         $illegal_skills_arr = array_intersect_key($IllegalSkillCombinations, array_flip($current_skills)); # Array of arrays of illegal skills.
@@ -203,7 +203,7 @@ class Player
         foreach ($illegal_skills_arr as $hasSkill => $dropSkills) {
             $illegal_skills = array_merge($illegal_skills, $dropSkills);
         }
-        
+
         // Initial population of allowed skills (those not already picked).
         foreach (array('N', 'D') as $type) {
             $stype_DEA_idx = $skillcats[$type]['DEA_idx'];
@@ -215,10 +215,10 @@ class Player
             }
         }
         $this->choosable_skills['chr'] = array(MA,AG,AV,ST);
-        
+
         // Now remove those skills not allowed by the improvement roll the player made.
         $N_allowed_new_skills = $this->mayHaveNewSkill();
-        $query = "SELECT 
+        $query = "SELECT
             ir1_d1 AS 'D11', ir1_d2 AS 'D12',
             ir2_d1 AS 'D21', ir2_d2 AS 'D22',
             ir3_d1 AS 'D31', ir3_d2 AS 'D32'
@@ -247,15 +247,15 @@ class Player
             $allowed['C'] = array_unique(array_merge($allowed['C'], $chr));
             $allowed['N'] = true; # May always select a new Normal skill when rolled no matter the outcome.
             $allowed['D'] |= ($D1 == $D2); # May select from Double skills when D6s are equal.
-            /* 
-                Normally we allow coaches to selected amongst all player skills the available/new improvement rolls allow, but 
+            /*
+                Normally we allow coaches to selected amongst all player skills the available/new improvement rolls allow, but
                 instead we now limit the player to select ONE skill at a time for a given improvement roll (in chronological order).
             */
             break;
         }
-        
-        /* 
-            If a player has SPPs enough for a new skill but has NOT (ever) improvement rolled 2xD6 according to match_data entries, 
+
+        /*
+            If a player has SPPs enough for a new skill but has NOT (ever) improvement rolled 2xD6 according to match_data entries,
             then allow player to select amongst all possible skills.
         */
         if ($N_allowed_new_skills > 0 && (count($IRs) > 0 || $rules['force_IR'])) {
@@ -268,23 +268,23 @@ class Player
                 }
             }
         }
-        
+
         return !($allowed === $NONE_ALLOWED);
     }
-    
+
     public function mayHaveNewSkill() {
 
         global $sparray;
-        
+
         $this->setSkills();
-        
+
         $skill_count =   count($this->ach_nor_skills)
                        + count($this->ach_dob_skills)
                        + $this->ach_ma
                        + $this->ach_st
                        + $this->ach_ag
                        + $this->ach_av;
-                       
+
         $allowable_skills = 0; # Allowable skills = player level = SPR
 
         foreach (array_reverse($sparray) as $rank => $details) { # Loop through $sparray reversed so highest ranks come first.
@@ -293,7 +293,7 @@ class Player
                 break;
             }
         }
-        
+
         # Returns the NUMBER of skills/chrs the player may take.
         $skill_diff = $allowable_skills - $skill_count;
         return ($this->is_sold || $this->is_dead || $skill_diff < 0) ? 0 : $skill_diff;
@@ -307,21 +307,21 @@ class Player
     }
 
     public function sell() {
-    
+
         /**
          * Sell player.
          **/
-    
+
         global $rules;
         $lid = get_alt_col('teams', 'team_id', $this->owned_by_team_id, 'f_lid');
         setupGlobalVars(T_SETUP_GLOBAL_VARS__LOAD_LEAGUE_SETTINGS, array('lid' => (int) $lid)); // Load correct $rules for league.
-    
+
         if ($this->is_sold || $this->is_dead)
             return false;
 
         $team = new Team($this->owned_by_team_id);
         $val = $this->is_journeyman ? 0 : $this->value;
-        
+
         if (!$team->dtreasury($val * $rules['player_refund']))
             return false;
 
@@ -345,10 +345,10 @@ class Player
 
         if (!$this->is_sold || $this->is_dead)
             return false;
-            
+
         $team = new Team($this->owned_by_team_id);
         $val = $this->is_journeyman ? 0 : $this->value;
-        
+
         if (!$team->dtreasury(-1 * $val * $rules['player_refund']))
             return false;
 
@@ -357,18 +357,18 @@ class Player
 
         $this->is_sold = false;
         SQLTriggers::run(T_SQLTRIG_PLAYER_DPROPS, array('id' => $this->player_id, 'obj' => $this)); # Update PV and TV.
-        return true;        
+        return true;
     }
 
     public function unbuy() { # "Un-create"
-    
+
         /**
          * Regret hirering/purchasing player (un-buy).
          **/
-    
+
         if (!$this->is_unbuyable() || $this->is_sold)
             return false;
-            
+
         $price = ($this->is_journeyman) ? 0 : self::price($this->f_pos_id);
         $team = new Team($this->owned_by_team_id);
 
@@ -377,11 +377,11 @@ class Player
 
         if (!mysql_query("DELETE FROM players WHERE player_id = $this->player_id"))
             return false;
-    
+
         SQLTriggers::run(T_SQLTRIG_PLAYER_DPROPS, array('id' => $this->player_id, 'obj' => $this)); # Update PV and TV.
         return true;
     }
-    
+
     public function hireJourneyman() {
 
         /**
@@ -390,15 +390,15 @@ class Player
 
         if (!$this->is_journeyman || $this->is_sold || $this->is_dead)
             return false;
-            
+
         $team = new Team($this->owned_by_team_id);
         $price = self::price($this->f_pos_id);
-        
+
         if ($team->isFull() || !$team->isPlayerBuyable($this->f_pos_id) || $team->treasury < $price || !$team->dtreasury(-1 * $price))
             return false;
 
         $query = "UPDATE players SET type = ".PLAYER_TYPE_NORMAL." WHERE player_id = $this->player_id";
-        
+
         if (mysql_query($query)) {
             return true;
         }
@@ -425,12 +425,12 @@ class Player
 
         if ($this->qty != 16) # Journeymen are players from a 0-16 buyable position.
             return false;
-       
+
         if (!$team->dtreasury($price))
             return false;
 
         $query = "UPDATE players SET type = ".PLAYER_TYPE_JOURNEY." WHERE player_id = $this->player_id";
-        
+
         if (mysql_query($query)) {
             return true;
         }
@@ -438,13 +438,23 @@ class Player
         else {
             $team->dtreasury(-1 * $price);
             return false;
-        }        
+        }
+    }
+
+    public function removeNiggle() {
+        if ($this->is_journeyman || $this->is_sold || $this->is_dead) {
+            return false;
+        }
+
+        $query = "UPDATE players SET inj_ni = GREATEST(inj_ni - 1, 0) WHERE player_id = $this->player_id";
+
+        return mysql_query($query);
     }
 
     public function rename($new_name) {
         return mysql_query("UPDATE players SET name = '" . mysql_real_escape_string($new_name) . "' WHERE player_id = $this->player_id");
     }
-    
+
     public function renumber($number) {
         global $T_ALLOWED_PLAYER_NR;
         return (in_array($number, $T_ALLOWED_PLAYER_NR) && mysql_query("UPDATE players SET nr = $number WHERE player_id = $this->player_id"));
@@ -461,12 +471,12 @@ class Player
     }
 
     public function addSkill($type, $skill) {
-    
+
         /**
          * Add new player skill.
          *
          *  $type may be:
-         *  ------------- 
+         *  -------------
          *  "N" = Normal skill
          *  "D" = Double skill
          *  "E" = Extra skill
@@ -474,8 +484,8 @@ class Player
          **/
 
         global $DEA, $skillididx, $skillcats, $CHR_CONV;
-        
-        $this->setSkills();        
+
+        $this->setSkills();
         $this->setChoosableSkills();
 
         // Don't allow new skill if not enough SPP, unless it is an extra skill.
@@ -501,11 +511,11 @@ class Player
     }
 
     public function rmSkill($type, $skill) {
-        
+
         /**
          * Remove existing player skill.
          **/
-         
+
         global $skillcats, $CHR_CONV;
 
         $query = '';
@@ -523,11 +533,11 @@ class Player
 
         return mysql_query($query) && SQLTriggers::run(T_SQLTRIG_PLAYER_DPROPS, array('id' => $this->player_id, 'obj' => $this)); # Update PV and TV.
     }
-    
+
     public function getStatus($match_id) {
         return self::getPlayerStatus($this->player_id, $match_id);
     }
-    
+
     public function chrLimits($type, $char) {
 
         /**
@@ -540,8 +550,8 @@ class Player
         $ret = 0;
 
         if ($type == 'ach') {
-            
-            /* 
+
+            /*
                 Returns the number of increased/archived characteristics the player is allowed.
                 Limits:
                     - Default + 2
@@ -551,47 +561,47 @@ class Player
             if ($this->$def < 9)
                 $ret = $this->$def + 2 - $this->$char;
             else
-                $ret = 10 - $this->$char;                
+                $ret = 10 - $this->$char;
         }
         elseif ($type == 'inj') {
-            
-            /* 
+
+            /*
                 Returns the number of characteristic injuries the player may sustain.
                 Limits:
                     - Default - 2
                     - Min 1
             */
-            
+
             if ($this->$def > 2)
                 $ret = $this->$char - ($this->$def - 2);
             else
                 $ret = $this->$char - 1;
         }
-        
+
         return ($ret >= 0) ? $ret : 0; // Make sure we always get zero when no more injuries/ach. chars may be sustained/obtained.
     }
-    
+
     public function getMatchMost($field) {
-        
+
         /**
-         * Returns an array structure with match data (and match obj.), for those matches, where $this player has the most of $field, 
+         * Returns an array structure with match data (and match obj.), for those matches, where $this player has the most of $field,
          * compared to all other player in the same match.
          **/
-        
+
         $matches = array();
 
         $matchesPlayed = "(SELECT DISTINCT f_match_id AS 'mid' FROM match_data WHERE f_player_id = $this->player_id) AS matchesPlayed";
         $max = "(SELECT f_match_id AS 'mid', MAX($field) AS 'maxVal' FROM match_data, $matchesPlayed WHERE f_match_id = mid GROUP BY f_match_id) AS max";
         $cntMax = "(SELECT f_match_id AS 'mid', COUNT(*) AS 'cnt', maxVal FROM match_data, $max WHERE f_match_id = mid AND ($field) = maxVal GROUP BY f_match_id) cntMax";
         $query = "
-            SELECT 
+            SELECT
                 *
-            FROM 
-                match_data, $cntMax 
-            WHERE 
-                    f_match_id = mid 
+            FROM
+                match_data, $cntMax
+            WHERE
+                    f_match_id = mid
                 AND f_player_id = $this->player_id
-                AND ($field) = maxVal 
+                AND ($field) = maxVal
                 AND cnt = 1
         ";
 
@@ -600,7 +610,7 @@ class Player
                 array_push($matches, array_merge(array('match_obj' => new Match($row['f_match_id'])), $row));
             }
         }
-        
+
         return $matches;
     }
 
@@ -618,10 +628,10 @@ class Player
                 array_push($mdata, array_merge($row, array('match_obj' => new Match($row['f_match_id']))));
             }
         }
-        
+
         return $mdata;
     }
-    
+
     public function saveText($str) {
         $desc = new ObjDescriptions(T_TEXT_PLAYER, $this->player_id);
         return $desc->save($str);
@@ -631,24 +641,24 @@ class Player
         $desc = new ObjDescriptions(T_TEXT_PLAYER, $this->player_id);
         return $desc->txt;
     }
-    
+
     public function savePic($name = false) {
         $img = new ImageSubSys(IMGTYPE_PLAYER, $this->player_id);
         list($retstatus, $error) = $img->save($name);
         return $retstatus;
     }
-    
+
     public function deletePic() {
         $img = new ImageSubSys(IMGTYPE_PLAYER, $this->player_id);
-        return $img->delete();    
+        return $img->delete();
     }
-    
-    public function getSkillsStr($HTML = false) 
+
+    public function getSkillsStr($HTML = false)
     {
         /**
          * Compiles skills string.
          **/
-    
+
         $this->setSkills();
         $chrs = array();
         $extras = empty($this->extra_skills) ? array() : array_strpack(($HTML) ? '<u>%s</u>' : '%s*', skillsTrans($this->extra_skills));
@@ -663,15 +673,15 @@ class Player
         $skillstr = array_merge($defs, skillsTrans(array_merge($this->ach_nor_skills, $this->ach_dob_skills)));
         return implode(', ', array_merge($skillstr, $extras, $chrs));
     }
-    
-    public function getInjsStr($HTML = false) 
+
+    public function getInjsStr($HTML = false)
     {
         /**
          * Compiles injuries string.
          **/
-    
+
         $injs = array();
-        
+
         if ($this->inj_ma > 0) array_push($injs, "-$this->inj_ma Ma");
         if ($this->inj_st > 0) array_push($injs, "-$this->inj_st St");
         if ($this->inj_ag > 0) array_push($injs, "-$this->inj_ag Ag");
@@ -683,11 +693,11 @@ class Player
             if ($this->inj_ni > 0) array_push($injs, "$this->inj_ni Ni");
         }
         if ($this->is_mng)     array_push($injs, "MNG");
-        
+
         return implode(', ', $injs);
     }
-    
-    private function _getInjHistory() 
+
+    private function _getInjHistory()
     {
         $injs = array();
         $stats = array();
@@ -706,7 +716,7 @@ class Player
         }
         return array($injs, $stats);
     }
-    public function getInjHistory() 
+    public function getInjHistory()
     {
         # This method wraps _getInjHistory() with extra information.
         list($injhist, $stats) = $this->_getInjHistory();
@@ -716,12 +726,12 @@ class Player
         }
         return array($injhist, $stats, $match_objs);
     }
-    
+
     /***************
      * Statics
      ***************/
-     
-    public static function exists($id) 
+
+    public static function exists($id)
     {
         $result = mysql_query("SELECT COUNT(*) FROM players WHERE player_id = $id");
         list($CNT) = mysql_fetch_row($result);
@@ -753,16 +763,16 @@ class Player
     }
 
     public static function price($pos_id) {
-    
+
         /**
          * Get the price of a specific player.
          **/
-        
+
         $result = mysql_query("SELECT cost FROM game_data_players WHERE pos_id = $pos_id");
         $row = mysql_fetch_row($result);
         return (int) $row[0];
     }
-    
+
     const T_CREATE_SUCCESS = 0;
     const T_CREATE_ERROR__SQL_QUERY_FAIL = 1;
     const T_CREATE_ERROR__UNEXPECTED_INPUT = 2;
@@ -775,7 +785,7 @@ class Player
     const T_CREATE_ERROR__NUMBER_OCCUPIED = 9;
     const T_CREATE_ERROR__JM_LIMIT_REACHED = 10;
     const T_CREATE_ERROR__INVALID_JM_POS = 11;
-    
+
 
     public static $T_CREATE_ERROR_MSGS = array(
         self::T_CREATE_ERROR__SQL_QUERY_FAIL     => 'SQL query failed.',
@@ -790,17 +800,17 @@ class Player
         self::T_CREATE_ERROR__JM_LIMIT_REACHED   => 'Journeymen limit is reached.',
         self::T_CREATE_ERROR__INVALID_JM_POS     => 'May not make a journeyman from that player position.',
     );
-    
+
     public static $T_CREATE_SQL_ERROR = array(
         'query' => null, # mysql fail query.
         'error' => null, # mysql_error()
     );
-    
+
     // Required passed fields (input) to create().
     public static $createEXPECTED = array(
         'name','team_id','nr','f_pos_id',
     );
-    
+
     public static function create(array $input, array $opts) {
 
         /**
@@ -820,10 +830,10 @@ class Player
         $JM = isset($opts['JM']) && $opts['JM'];
         $FREE = isset($opts['free']) && $opts['free'];
         $FORCE = isset($opts['force']) && $opts['force'];
-        
+
         # When forcing ($FORCE is true) we ignore these errors:
         $ignoreableErrors = array(
-            self::T_CREATE_ERROR__TEAM_FULL, self::T_CREATE_ERROR__POS_LIMIT_REACHED, self::T_CREATE_ERROR__INSUFFICIENT_FUNDS, 
+            self::T_CREATE_ERROR__TEAM_FULL, self::T_CREATE_ERROR__POS_LIMIT_REACHED, self::T_CREATE_ERROR__INSUFFICIENT_FUNDS,
             self::T_CREATE_ERROR__NUMBER_OCCUPIED, self::T_CREATE_ERROR__JM_LIMIT_REACHED, self::T_CREATE_ERROR__INVALID_JM_POS,
         );
 
@@ -846,7 +856,7 @@ class Player
             self::T_CREATE_ERROR__INVALID_NUMBER     => !in_array($input['nr'], $T_ALL_PLAYER_NR),
             self::T_CREATE_ERROR__NUMBER_OCCUPIED    => $team->isPlayerNumberOccupied((int) $input['nr']),
             self::T_CREATE_ERROR__JM_LIMIT_REACHED   => $JM && $team->isJMLimitReached(),
-            // Is position valid to make a journeyman? 
+            // Is position valid to make a journeyman?
             // Journeymen may be made from those positions, from which 16 players of the position is allowed on a team.
             self::T_CREATE_ERROR__INVALID_JM_POS     => $JM && $DEA[$team->f_rname]['players'][get_alt_col('game_data_players', 'pos_id', (int) $input['f_pos_id'], 'pos')]['qty'] < 12,
         );
@@ -855,7 +865,7 @@ class Player
         }
 
         $input['owned_by_team_id'] = (int) $input['team_id']; unset($input['team_id']);
-        $input['name'] = "'".mysql_real_escape_string($input['name'])."'"; 
+        $input['name'] = "'".mysql_real_escape_string($input['name'])."'";
         $input['date_bought'] = 'NOW()';
         $input['type'] = $JM ? PLAYER_TYPE_JOURNEY : PLAYER_TYPE_NORMAL;
         foreach (array('ach_ma', 'ach_st', 'ach_ag', 'ach_av', 'extra_spp') as $f) {$input[$f] = 0;}
@@ -872,7 +882,7 @@ class Player
         }
 
         SQLTriggers::run(T_SQLTRIG_PLAYER_NEW, array('id' => $pid, 'obj' => (object) array('player_id' => $pid, 'owned_by_team_id' => (int) $input['owned_by_team_id']))); # Update PV and TV.
-        
+
         return array(self::T_CREATE_SUCCESS, $pid);
     }
 }
