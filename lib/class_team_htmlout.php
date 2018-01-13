@@ -171,6 +171,7 @@ public static function profile($tid)
         case 'about': $t->_about($ALLOW_EDIT); break;
         case 'news': $t->_news($ALLOW_EDIT); break;
         case 'games': $t->_games(); break;
+        case 'offseason': $t->_offseason($ALLOW_EDIT, $players); break;
     }
     if (isset($_GET['subsec'])){
         ?>
@@ -1333,7 +1334,7 @@ private function _actionBoxes($ALLOW_EDIT, $players)
                                     }
                                     ?>
                                 </select>
-                                <input type="hidden" name="type" value="removeNiggle">
+                                <input type="hidden" name="type" value="remove_niggle">
                                 <?php
                                 break;
                         }
@@ -1870,6 +1871,184 @@ private function _games()
     HTMLOUT::recentGames(T_OBJ_TEAM, $team->team_id, false, false, false, false, array('url' => urlcompile(T_URL_PROFILE,T_OBJ_TEAM,$team->team_id,false,false).'&amp;subsec=games', 'n' => MAX_RECENT_GAMES, 'GET_SS' => 'gp'));
     echo "<br>";
     HTMLOUT::upcomingGames(T_OBJ_TEAM, $team->team_id, false, false, false, false, array('url' => urlcompile(T_URL_PROFILE,T_OBJ_TEAM,$team->team_id,false,false).'&amp;subsec=games', 'n' => MAX_RECENT_GAMES, 'GET_SS' => 'ug'));
+}
+
+private function _offseason($ALLOW_EDIT, $players)
+{
+    global $lng;
+    $team = $this;
+
+    title('<div class="team-management-title">' . $lng->getTrn('profile/team/offseason') . '</div>');
+
+    $active_players = array();
+    foreach ($players as $p) {
+        if ($p->is_dead || $p->is_sold) {
+            continue;
+        } else {
+            array_push($active_players, $p);
+        }
+
+        $p->name = preg_replace('/\s/', '&nbsp;', $p->name);
+        $p->position = preg_replace('/\s/', '&nbsp;', $p->position);
+
+        // Fictive player color fields used for creating player table.
+        $p->HTMLfcolor = '#000000';
+        $p->HTMLbcolor = COLOR_HTML_NORMAL;
+
+        $p->skills   = '<small>'.$p->getSkillsStr(true).'</small>';
+        $p->injs     = $p->getInjsStr(true);
+        $p->position = "<table style='border-spacing:0px;'><tr><td><img align='left' src='$p->icon' alt='player avatar'></td><td>".$lng->getTrn("position/".strtolower($lng->FilterPosition($p->position)))."</td></tr></table>";
+        $p->cost     = $p->wants_to_retire ? $p->value + (20000 * $p->season) : $p->value;
+        $p->wants_to_retire = $p->wants_to_retire ? 'Yes' : 'No';
+
+        // Characteristic's colors
+        foreach (array('ma', 'ag', 'av', 'st') as $chr) {
+            $sub = $p->$chr - $p->{"def_$chr"};
+            if ($sub == 0) {
+                // Nothing!
+            }
+            elseif ($sub == 1)  $p->{"${chr}_color"} = COLOR_HTML_CHR_EQP1;
+            elseif ($sub > 1)   $p->{"${chr}_color"} = COLOR_HTML_CHR_GTP1;
+            elseif ($sub == -1) $p->{"${chr}_color"} = COLOR_HTML_CHR_EQM1;
+            elseif ($sub < -1)  $p->{"${chr}_color"} = COLOR_HTML_CHR_LTM1;
+
+            if ($p->$chr != $p->{"${chr}_ua"}) {
+                $p->{"${chr}_color"} = COLOR_HTML_CHR_BROKENLIMIT;
+                $p->$chr = $p->{$chr.'_ua'}.' <i>('.$p->$chr.' eff.)</i>';
+            }
+        }
+
+        // TODO Add onChange handler
+        $p->action = "<select name='player".$p->player_id."' id='player".$p->player_id."'>" . 
+                "<option value='keep'>Keep</option>" .
+                "<option value='fire'>Release</option>" .
+                "<option value='coach'>Keep as coach</option>" .
+            "</select>";
+    }
+
+    $player_fields = array(
+        'nr'        => array('desc' => '#'),
+        'name'      => array('desc' => $lng->getTrn('common/name'), 'href' => array('link' => urlcompile(T_URL_PROFILE,T_OBJ_PLAYER,false,false,false), 'field' => 'obj_id', 'value' => 'player_id')),
+        'position'  => array('desc' => $lng->getTrn('common/pos'), 'nosort' => true),
+        'ma'        => array('desc' => 'Ma'),
+        'st'        => array('desc' => 'St'),
+        'ag'        => array('desc' => 'Ag'),
+        'av'        => array('desc' => 'Av'),
+        'skills'    => array('desc' => $lng->getTrn('common/skills'), 'nosort' => true),
+        'injs'      => array('desc' => $lng->getTrn('common/injs'), 'nosort' => true),
+        'wants_to_retire'    => array('desc' => 'Retire?'),
+        'season'    => array('desc' => 'Season', 'suffix' => 'st'),
+        'mv_cp'     => array('desc' => 'Cp'),
+        'mv_td'     => array('desc' => 'Td'),
+        'mv_intcpt' => array('desc' => 'Int'),
+        'mv_cas'    => array('desc' => 'Cas'),
+        'mv_mvp'    => array('desc' => 'MVP'),
+        'mv_spp'    => array('desc' => 'SPP'),
+        'value'     => array('desc' => $lng->getTrn('common/value'), 'kilo' => true, 'suffix' => 'k'),
+        'cost'      => array('desc' => $lng->getTrn('common/cost'), 'kilo' => true, 'suffix' => 'k'),
+        'action'    => array('desc' => 'Action', 'nosort' => true)
+    );
+
+    HTMLOUT::sort_table(
+        $team->name.' roster',
+        urlcompile(T_URL_PROFILE,T_OBJ_TEAM,$team->team_id,false,false).'&amp;detailed=0',
+        $active_players,
+        $player_fields,
+        sort_rule('player'),
+        (isset($_GET['sort'])) ? array((($_GET['dir'] == 'a') ? '+' : '-') . $_GET['sort']) : array(),
+        array('color' => false, 'doNr' => false, 'noHelp' => true)
+    );
+
+    $team_goods_defaults = $team->getGoods(false);
+
+    $team_goods = array(
+        array(
+            'thing'     => $lng->getTrn('common/reroll'),
+            'quantity'  => $team->rerolls,
+            'value'     => $team_goods_defaults['rerolls']['cost'] * $team->rerolls,
+            'cost'      => $team_goods_defaults['rerolls']['cost'],
+            'max'       => 8
+        ),
+        array(
+            'thing'     => $lng->getTrn('matches/report/ff'),
+            'quantity'  => $team->rg_ff,
+            'value'     => 10 * $team->rg_ff,
+            'cost'      => 0,
+            'max'       => 18
+        ),
+        array(
+            'thing'     => $lng->getTrn('common/ass_coach'),
+            'quantity'  => $team->ass_coaches,
+            'value'     => 10 * $team->ass_coaches,
+            'cost'      => 10 * $team->ass_coaches,
+            'max'       => 10
+        ),
+        array(
+            'thing'     => $lng->getTrn('common/cheerleader'),
+            'quantity'  => $team->cheerleaders,
+            'value'     => 10 * $team->cheerleaders,
+            'cost'      => 10 * $team->cheerleaders,
+            'max'       => 10
+        )
+    );
+
+    if (!in_array($team->f_race_id, $racesNoApothecary)) {
+        $apothecary = array(
+            'thing'     => $lng->getTrn('common/apothecary'),
+            'quantity'  => $team->apothecary ? $lng->getTrn('common/yes') : $lng->getTrn('common/no'),
+            'value'     => $team->apothecary ? 50 : 0,
+            'cost'      => $team->apothecary ? 50 : 0
+        );
+        array_push($team_details, $apothecary);
+    }
+    
+    ?>
+
+    <div class="boxTeamPage">
+        <div class="boxTitle<?php echo T_HTMLBOX_INFO;?>"><?php echo $lng->getTrn('profile/team/box_info/title');?></div>
+        <div class="boxBody">
+            <table width="100%">
+                <thead>
+                    <th></th>
+                    <th>Quantity</th>
+                    <th>Cost</th>
+                    <th>Value</th>
+                </thead>
+                <tbody>
+                <?php
+                    foreach ($team_goods as $team_good) { ?>
+                        <tr>
+                            <td><?php echo $team_good['thing']; ?></td>
+                            <td>
+                                <select name="<?php echo $team_good['thing']; ?>">
+                                    <?php for ($i = 0; $i <= $team_good['max']; $i++) {
+                                        $selected = ($team_good['quantity'] == $i) ? 'SELECTED' : '';
+                                        echo "<option value='$i' $selected>$i</option>";
+                                    } ?>
+                                </select>
+                            <td><?php echo $team_good['cost']; ?></td>
+                            <td><?php echo $team_good['value']; ?></td>
+                        </tr>
+                    <?php } ?>
+
+                    <tr>
+                        <td colspan=4><hr></td>
+                    </tr>
+
+                    <tr>
+                        <td colspan=3>TV</td>
+                        <td><?php echo $team->tv/1000 . 'k'; ?></td>
+                    </tr>
+                    <tr>
+                        <td colspan=3><?php echo $lng->getTrn('matches/report/treas')?></td>
+                        <td><?php echo $team->treasury/1000 . 'k'; ?></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <?php
 }
 
 }

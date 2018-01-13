@@ -61,6 +61,7 @@ For example, english is in <en-GB>, french in <fr-FR>, .......
     <injs>Injuries</injs>
     <pos>Position</pos>
     <price>Price</price>
+    <cost>Cost</cost>
     <number>Number</number>
     <opponent>Opponent</opponent>
     <reroll>Re-roll</reroll>
@@ -369,6 +370,10 @@ For example, english is in <en-GB>, french in <fr-FR>, .......
                 <remove_niggle> <![CDATA[ Remove one of a player's niggling injuries.]]> </remove_niggle>
             </desc>
         </box_admin>
+
+        <offseason>
+            <title>Offseason</title>
+        </offseason>
     </team>
 </profile>
 

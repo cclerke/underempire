@@ -119,6 +119,10 @@ class Player
     public $f_rid = 0;
     public $f_rname = "";
 
+    // Offseason
+    public $wants_to_retire = 0;
+    public $season = 1;
+
     /***************
      * Methods
      ***************/
@@ -127,7 +131,7 @@ class Player
 
         global $DEA;
 
-        // Get relaveant store game data.
+        // Get relevant store game data.
         $result = mysql_query("SELECT player_id,
             game_data_players.qty AS 'qty', game_data_players.pos AS 'pos', game_data_players.skills AS 'def_skills',
             game_data_players.ma AS 'def_ma', game_data_players.st AS 'def_st', game_data_players.ag AS 'def_ag', game_data_players.av AS 'def_av'
