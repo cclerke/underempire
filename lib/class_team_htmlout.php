@@ -1164,7 +1164,7 @@ private function _actionBoxes($ALLOW_EDIT, $players)
                                 ?>
                                 <hr><br>
                                 Bought ff + Match ff = Total<br>
-                                <input type='text' name="amount" value="<?php echo $team->ff_bought.'" maxlength=2 size=1 style="text-align: right">+'.($team->rg_ff-$team->ff_bought).'='.$team->rg_ff ?>
+                                <input type='text' name="amount" value="<?php echo $team->ff_bought.'" maxlength=2 size=1 style="text-align: right">+'.($team->rg_ff-$team->ff_bought).'='.$team->rg_ff ?>">
                                 <input type="hidden" name="type" value="ff">
                                 <?php
                                 break;
@@ -1875,7 +1875,7 @@ private function _games()
 
 private function _offseason($ALLOW_EDIT, $players)
 {
-    global $lng;
+    global $lng, $rules, $racesNoApothecary, $DEA, $T_ALLOWED_PLAYER_NR;
     $team = $this;
 
     title('<div class="team-management-title">' . $lng->getTrn('profile/team/offseason') . '</div>');
@@ -1919,7 +1919,7 @@ private function _offseason($ALLOW_EDIT, $players)
         }
 
         // TODO Add onChange handler
-        $p->action = "<select name='player".$p->player_id."' id='player".$p->player_id."'>" . 
+        $p->action = "<select name='player".$p->player_id."' id='player".$p->player_id."'>" .
                 "<option value='keep'>Keep</option>" .
                 "<option value='fire'>Release</option>" .
                 "<option value='coach'>Keep as coach</option>" .
@@ -2001,11 +2001,11 @@ private function _offseason($ALLOW_EDIT, $players)
         );
         array_push($team_details, $apothecary);
     }
-    
+
     ?>
 
     <div class="boxTeamPage">
-        <div class="boxTitle<?php echo T_HTMLBOX_INFO;?>"><?php echo $lng->getTrn('profile/team/box_info/title');?></div>
+        <div class="boxTitle<?php echo T_HTMLBOX_INFO;?>"><?php echo $lng->getTrn('profile/team/box_tm/title');?></div>
         <div class="boxBody">
             <table width="100%">
                 <thead>
@@ -2021,9 +2021,11 @@ private function _offseason($ALLOW_EDIT, $players)
                             <td><?php echo $team_good['thing']; ?></td>
                             <td>
                                 <select name="<?php echo $team_good['thing']; ?>">
-                                    <?php for ($i = 0; $i <= $team_good['max']; $i++) {
-                                        $selected = ($team_good['quantity'] == $i) ? 'SELECTED' : '';
-                                        echo "<option value='$i' $selected>$i</option>";
+                                    <?php
+                                        $i = $team_good['thing'] == 'Fan factor' ? $team_good['quantity'] : 0;
+                                        for ($i; $i <= $team_good['max']; $i++) {
+                                            $selected = ($team_good['quantity'] == $i) ? 'SELECTED' : '';
+                                            echo "<option value='$i' $selected>$i</option>";
                                     } ?>
                                 </select>
                             <td><?php echo $team_good['cost']; ?></td>
@@ -2045,6 +2047,48 @@ private function _offseason($ALLOW_EDIT, $players)
                     </tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    <div class="boxTeamPage">
+        <div class="boxTitle<?php echo T_HTMLBOX_COACH;?>"><?php echo $lng->getTrn('profile/team/box_tm/hire_player');?></div>
+        <div class="boxBody">
+            <?php echo $lng->getTrn('common/player');?>:<br>
+            <select name='new_player'>
+                <?php
+                    $active_players = array_filter($players, create_function('$p', "return (\$p->is_sold || \$p->is_dead || \$p->is_mng) ? false : true;"));
+                    $DISABLE = true;
+                    foreach ($DEA[$team->f_rname]['players'] as $pos => $details) {
+
+                        // Show players on the select list if buyable, or if player is a potential journeyman AND team has not reached journeymen limit.
+                        if (($team->isPlayerBuyable($details['pos_id']) && $team->treasury >= $details['cost']) ||
+                            (($details['qty'] == 16 || $details['qty'] == 12) && count($active_players) < $rules['journeymen_limit'])) {
+                            echo "<option value='$details[pos_id]'>" . $details['cost']/1000 . "k | ".$lng->GetTrn('position/'.strtolower($lng->FilterPosition($pos)))."</option>\n";
+                            $DISABLE = false;
+                        }
+                    }
+                ?>
+            </select>
+            <br><br>
+            <?php echo $lng->getTrn('common/number');?>:<br>
+            <select name="new_number">
+                <?php
+                foreach ($T_ALLOWED_PLAYER_NR as $i) {
+                    foreach ($players as $p) {
+                        if ($p->nr == $i && !$p->is_sold && !$p->is_dead)
+                            continue 2;
+                    }
+                    echo "<option value='$i'>$i</option>\n";
+                }
+                ?>
+            </select>
+            <br><br>
+            <?php echo $lng->getTrn('common/name');?>:<br>
+            <input type="text" name="name">
+            <input type="hidden" name="type" value="hire_player">
+
+            <br><br>
+            <input type="submit" name="button" value="OK" <?php echo ($DISABLE ? 'DISABLED' : '');?>>
         </div>
     </div>
 
