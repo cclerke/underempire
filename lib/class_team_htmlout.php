@@ -1877,6 +1877,7 @@ private function _offseason($ALLOW_EDIT, $players)
 {
     global $lng, $rules, $racesNoApothecary, $DEA, $T_ALLOWED_PLAYER_NR;
     $team = $this;
+    $ONE_MILLION = 1000000;
 
     title('<div class="team-management-title">' . $lng->getTrn('profile/team/offseason') . '</div>');
 
@@ -1918,8 +1919,7 @@ private function _offseason($ALLOW_EDIT, $players)
             }
         }
 
-        // TODO Add onChange handler
-        $p->action = "<select name='player".$p->player_id."' id='player".$p->player_id."'>" .
+        $p->action = "<select class='activePlayer' name='player$p->player_id' id='player$p->player_id' data-cost='$p->cost' data-value='$p->value' data-pos='$p->f_pos_id' data-number='$p->nr' onchange='handleActivePlayerStatusChange(this)'>" .
                 "<option value='keep'>Keep</option>" .
                 "<option value='fire'>Release</option>" .
                 "<option value='coach'>Keep as coach</option>" .
@@ -1948,7 +1948,11 @@ private function _offseason($ALLOW_EDIT, $players)
         'cost'      => array('desc' => $lng->getTrn('common/cost'), 'kilo' => true, 'suffix' => 'k'),
         'action'    => array('desc' => 'Action', 'nosort' => true)
     );
+    ?>
 
+    <form method="POST" name="offseason">
+
+    <?php
     HTMLOUT::sort_table(
         $team->name.' roster',
         urlcompile(T_URL_PROFILE,T_OBJ_TEAM,$team->team_id,false,false).'&amp;detailed=0',
@@ -1963,46 +1967,67 @@ private function _offseason($ALLOW_EDIT, $players)
 
     $team_goods = array(
         array(
+            'id'        => 'rr',
             'thing'     => $lng->getTrn('common/reroll'),
             'quantity'  => $team->rerolls,
-            'value'     => $team_goods_defaults['rerolls']['cost'] * $team->rerolls,
+            'value'     => $team_goods_defaults['rerolls']['cost'] * $team->rerolls / 1000,
             'cost'      => $team_goods_defaults['rerolls']['cost'],
             'max'       => 8
         ),
         array(
+            'id'        => 'ff',
             'thing'     => $lng->getTrn('matches/report/ff'),
             'quantity'  => $team->rg_ff,
             'value'     => 10 * $team->rg_ff,
-            'cost'      => 0,
+            'cost'      => 10000,
             'max'       => 18
         ),
         array(
+            'id'        => 'ac',
             'thing'     => $lng->getTrn('common/ass_coach'),
             'quantity'  => $team->ass_coaches,
             'value'     => 10 * $team->ass_coaches,
-            'cost'      => 10 * $team->ass_coaches,
+            'cost'      => 10000,
             'max'       => 10
         ),
         array(
+            'id'        => 'cheer',
             'thing'     => $lng->getTrn('common/cheerleader'),
             'quantity'  => $team->cheerleaders,
             'value'     => 10 * $team->cheerleaders,
-            'cost'      => 10 * $team->cheerleaders,
+            'cost'      => 10000,
             'max'       => 10
         )
     );
 
     if (!in_array($team->f_race_id, $racesNoApothecary)) {
         $apothecary = array(
+            'id'        => 'apo',
             'thing'     => $lng->getTrn('common/apothecary'),
-            'quantity'  => $team->apothecary ? $lng->getTrn('common/yes') : $lng->getTrn('common/no'),
+            'quantity'  => $team->apothecary ? 1 : 0,
             'value'     => $team->apothecary ? 50 : 0,
-            'cost'      => $team->apothecary ? 50 : 0
+            'cost'      => 50000,
+            'max'       => 1
         );
-        array_push($team_details, $apothecary);
+        array_push($team_goods, $apothecary);
     }
 
+    // TODO Calculate programmatically, round up to nearest 10000
+    $offseason_funding = $ONE_MILLION + $team->treasury + (15 * 10000) + (22 * 5000) + (15 * 5000);
+    $offseason_treasury = $offseason_funding - $team->tv + (10000 * $team->rg_ff);
     ?>
+
+    <table class="common" id="rookies">
+        <tr class="commonhead"><td colspan="5"><b>Rookies</b></td></tr>
+        <tr>
+            <td>#</td>
+            <td>Name</td>
+            <td>Position</td>
+            <td>Value</td>
+            <td>Action</td>
+        </tr>
+        <tr><td colspan="5"><hr></td></tr>
+    </table>
 
     <div class="boxTeamPage">
         <div class="boxTitle<?php echo T_HTMLBOX_INFO;?>"><?php echo $lng->getTrn('profile/team/box_tm/title');?></div>
@@ -2020,7 +2045,7 @@ private function _offseason($ALLOW_EDIT, $players)
                         <tr>
                             <td><?php echo $team_good['thing']; ?></td>
                             <td>
-                                <select name="<?php echo $team_good['thing']; ?>">
+                                <select id="<?php echo $team_good['id']; ?>" class='teamGoods' name="<?php echo $team_good['thing']; ?>" data-cost="<?php echo $team_good['cost']; ?>" data-initial="<?php echo $team_good['quantity']; ?>" onchange="handleGoodsChange(this)">
                                     <?php
                                         $i = $team_good['thing'] == 'Fan factor' ? $team_good['quantity'] : 0;
                                         for ($i; $i <= $team_good['max']; $i++) {
@@ -2028,8 +2053,8 @@ private function _offseason($ALLOW_EDIT, $players)
                                             echo "<option value='$i' $selected>$i</option>";
                                     } ?>
                                 </select>
-                            <td><?php echo $team_good['cost']; ?></td>
-                            <td><?php echo $team_good['value']; ?></td>
+                            <td id="<?php echo $team_good['id'] . 'cost'; ?>"><?php echo $team_good['cost'] * $team_good['quantity'] / 1000; ?>k</td>
+                            <td id="<?php echo $team_good['id'] . 'value'; ?>"><?php echo $team_good['value']; ?>k</td>
                         </tr>
                     <?php } ?>
 
@@ -2039,14 +2064,16 @@ private function _offseason($ALLOW_EDIT, $players)
 
                     <tr>
                         <td colspan=3>TV</td>
-                        <td><?php echo $team->tv/1000 . 'k'; ?></td>
+                        <td id="displayTV"><?php echo $team->tv/1000 . 'k'; ?></td>
                     </tr>
                     <tr>
                         <td colspan=3><?php echo $lng->getTrn('matches/report/treas')?></td>
-                        <td><?php echo $team->treasury/1000 . 'k'; ?></td>
+                        <td id="displayTreasury"><?php echo $offseason_treasury/1000 . 'k'; ?></td>
                     </tr>
                 </tbody>
             </table>
+            <input type="hidden" id="treasury" name="treasury" value="<?php echo $offseason_treasury; ?>">
+            <input type="hidden" id="initialTreasury" name="initialTreasury" value="<?php echo $offseason_funding; ?>">
         </div>
     </div>
 
@@ -2054,24 +2081,21 @@ private function _offseason($ALLOW_EDIT, $players)
         <div class="boxTitle<?php echo T_HTMLBOX_COACH;?>"><?php echo $lng->getTrn('profile/team/box_tm/hire_player');?></div>
         <div class="boxBody">
             <?php echo $lng->getTrn('common/player');?>:<br>
-            <select name='new_player'>
+            <select name="new_player" id="new_player">
                 <?php
                     $active_players = array_filter($players, create_function('$p', "return (\$p->is_sold || \$p->is_dead || \$p->is_mng) ? false : true;"));
-                    $DISABLE = true;
                     foreach ($DEA[$team->f_rname]['players'] as $pos => $details) {
-
+                        $positionString = $lng->GetTrn('position/'.strtolower($lng->FilterPosition($pos)));
                         // Show players on the select list if buyable, or if player is a potential journeyman AND team has not reached journeymen limit.
-                        if (($team->isPlayerBuyable($details['pos_id']) && $team->treasury >= $details['cost']) ||
-                            (($details['qty'] == 16 || $details['qty'] == 12) && count($active_players) < $rules['journeymen_limit'])) {
-                            echo "<option value='$details[pos_id]'>" . $details['cost']/1000 . "k | ".$lng->GetTrn('position/'.strtolower($lng->FilterPosition($pos)))."</option>\n";
-                            $DISABLE = false;
-                        }
+                        $canPurchase = ($team->isPlayerBuyable($details['pos_id']) && $offseason_treasury >= $details['cost']) ||
+                            (($details['qty'] == 16 || $details['qty'] == 12) && count($active_players) < $rules['journeymen_limit']) ? '' : 'DISABLED';
+                        echo "<option value='$details[pos_id]' $canPurchase data-pos='$positionString' data-value='$details[cost]' data-max='$details[qty]'>" . $details['cost']/1000 . "k | ".$lng->GetTrn('position/'.strtolower($lng->FilterPosition($pos)))."</option>\n";
                     }
                 ?>
             </select>
             <br><br>
             <?php echo $lng->getTrn('common/number');?>:<br>
-            <select name="new_number">
+            <select name="new_number" id="new_number">
                 <?php
                 foreach ($T_ALLOWED_PLAYER_NR as $i) {
                     foreach ($players as $p) {
@@ -2084,13 +2108,214 @@ private function _offseason($ALLOW_EDIT, $players)
             </select>
             <br><br>
             <?php echo $lng->getTrn('common/name');?>:<br>
-            <input type="text" name="name">
-            <input type="hidden" name="type" value="hire_player">
+            <input type="text" name="name" id="new_player_name">
 
             <br><br>
-            <input type="submit" name="button" value="OK" <?php echo ($DISABLE ? 'DISABLED' : '');?>>
+            <input type="button" name="button" value="OK" onclick="hirePlayer()">
         </div>
     </div>
+
+    </form>
+
+    <script>
+        function _createRowData(content) {
+            return $('<td></td>').html(content);
+        }
+
+        function _updateAvailablePlayers(fieldID, value, disable) {
+            var select = $('#' + fieldID);
+            $(select).find('option[value="'+value+'"]').attr('disabled', disable);
+
+            if (disable) {
+                $(select).find('option[value="'+value+'"]').attr('selected', false);
+                $(select).find('option:not([disabled])').first().attr('selected', 'selected');
+
+                // TODO Disable keep option
+            } else if ($(select).find('option[value="'+value+'"]').length === 0) {
+                $(select).prepend('<option value="'+value+'">'+value+'</option>');
+                // TODO Re-enable keep option
+            }
+        }
+
+        function _updatePositionLimits() {
+            var positions = {};
+            $('#new_player').find('option').each(function() {
+                positions[$(this).val()] = {
+                    qty: 0,
+                    max: $(this).data('max'),
+                    cost: $(this).data('value')
+                }
+            });
+
+            $('select.activePlayer').each(function() {
+                if ($(this).find('option:selected').val() == 'keep') {
+                    positions[$(this).data('pos')]['qty'] += 1;
+                }
+            });
+
+            $('tr.rookiePlayer').each(function() {
+                positions[$(this).data('pos')]['qty'] += 1;
+            });
+
+            var treasury = $('#treasury').val();
+            for (var id in positions) {
+                var pos = positions[id];
+                if (pos['qty'] >= pos['max'] || pos['cost'] > treasury) {
+                    _updateAvailablePlayers('new_player', id, true);
+                } else {
+                    _updateAvailablePlayers('new_player', id, false);
+                }
+            }
+        }
+
+        function _calculateGoodCost(good, cost, quantity, initialQuantity) {
+            if ($.inArray(good, ['rr', 'cheer', 'apo']) !== -1) {
+                return cost * quantity;
+            } else if (good == 'ac') {
+                var freeCoaches = 0;
+                $('select.activePlayer').each(function() {
+                    if ($(this).find('option:selected').val() == 'coach') {
+                        freeCoaches += 1;
+                    }
+                });
+                return cost * Math.max((quantity - freeCoaches), 0);
+            }
+            else {
+                return cost * Math.max((quantity - initialQuantity), 0);
+            }
+        }
+
+        function handleActivePlayerStatusChange(player) {
+            // Update value, cost of current player when status changes (keep, release, coach)
+            var row = $(player).closest('tr');
+            var option = $(player).find('option:selected');
+            var action = $(option).val();
+
+            switch (action) {
+                case 'fire':
+                    _updateAvailablePlayers('new_number', $(player).data('number'), false);
+                    $(row).css('background-color', 'red');
+                    break;
+                case 'coach':
+                    var coachList = $('#ac');
+                    coachList.val(Math.min(coachList.find('option:selected').val() + 1, 10)).change();
+                    _updateAvailablePlayers('new_number', $(player).data('number'), false);
+                    $(row).css('background-color', 'grey');
+                    break;
+                default:
+                    _updateAvailablePlayers('new_number', $(player).data('number'), true);
+                    $(row).css('background-color', 'white');
+                    break;
+            }
+
+            _updatePositionLimits();
+
+            updateTV();
+            updateTreasury();
+        }
+
+        function handleGoodsChange(good) {
+            // Handles updates of all good changes
+            var goodID = $(good).attr('id');
+            var quantity = $(good).find('option:selected').val();
+            var cost = $(good).data('cost');
+            var initial = $(good).data('initial');
+
+            $('#' + goodID + 'cost').html(_calculateGoodCost(goodID, cost, quantity, initial) / 1000 + 'k');
+            $('#' + goodID + 'value').html(quantity * cost / 1000 + 'k');
+
+            updateTV();
+            updateTreasury();
+        }
+
+        function hirePlayer() {
+            // Add hired player
+            var playerType = $('#new_player option:selected');
+            var price = $(playerType).data('value');
+            var number = $('#new_number').val();
+            var player = $('<tr></tr>').addClass('rookiePlayer').attr({'data-pos': $(playerType).val(), 'data-cost': price, 'data-number': number});
+            player.append(_createRowData(number));
+            player.append(_createRowData($('#new_player_name').val()));
+            player.append(_createRowData($(playerType).data('pos')));
+            player.append(_createRowData(price/1000 + 'k'));
+            player.append(_createRowData("<input type='button' onclick='dropNewPlayer(this)' value='Release'>"));
+            $('#rookies').append(player);
+
+            _updateAvailablePlayers('new_number', number, true);
+
+            updateTV();
+            updateTreasury();
+
+            _updatePositionLimits();
+        }
+
+        function dropNewPlayer(releaseButton) {
+            // Drop newly hired player
+            var player = $(releaseButton).closest('tr');
+
+            _updateAvailablePlayers('new_number', $(player).data('number'), false);
+            _updateAvailablePlayers('new_player', $(player).data('pos'), false);
+
+            $(player).remove();
+
+            _updatePositionLimits();
+
+            updateTV();
+            updateTreasury();
+        }
+
+        function updateTV() {
+            // Recalculate team TV
+            var tv = 0;
+            $('select.activePlayer').each(function() {
+                if ($(this).find('option:selected').val() == 'keep') {
+                    tv += $(this).data('value');
+                }
+            });
+
+            $('tr.rookiePlayer').each(function() {
+                tv += $(this).data('cost');
+            });
+
+            $('select.teamGoods').each(function() {
+                // Rerolls, cheerleaders add value
+                tv += $(this).find('option:selected').val() * $(this).data('cost');
+            });
+
+            $('#displayTV').html(tv/1000 + 'k');
+        }
+
+        function updateTreasury() {
+            // Update remaining offseason treasury
+            var funding = $('#initialTreasury').val();
+            var costs = 0;
+
+            $('select.activePlayer').each(function() {
+                if ($(this).find('option:selected').val() == 'keep') {
+                    costs += $(this).data('cost');
+                }
+            });
+
+            $('tr.rookiePlayer').each(function() {
+                costs += $(this).data('cost');
+            });
+
+            $('select.teamGoods').each(function() {
+                var goodID = $(this).attr('id');
+                var quantity = $(this).find('option:selected').val();
+                var cost = $(this).data('cost');
+                var initial = $(this).data('initial');
+
+                costs += _calculateGoodCost(goodID, cost, quantity, initial);
+            });
+
+            var treasury = funding - costs;
+            $('#displayTreasury').html(treasury/1000 + 'k');
+            $('#treasury').val(treasury);
+
+            _updatePositionLimits();
+        }
+    </script>
 
     <?php
 }
