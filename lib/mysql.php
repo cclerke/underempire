@@ -110,6 +110,7 @@ $core_tables = array(
         'slost'   => $CT_cols['streak'].' DEFAULT 0',
         'wt_cnt'  => $CT_cols['wt_cnt'].' DEFAULT 0',
         'win_pct' => $CT_cols['win_pct'].' DEFAULT 0', # All-time win pct (across all matches).
+        'current_season' => 'INT NOT NULL DEFAULT 0'
     ),
     'players' => array(
         'player_id'         => $CT_cols[T_OBJ_PLAYER].' NOT NULL PRIMARY KEY AUTO_INCREMENT',
@@ -150,6 +151,8 @@ $core_tables = array(
         'inj_ag'    => $CT_cols['chr'].' DEFAULT 0',
         'inj_av'    => $CT_cols['chr'].' DEFAULT 0',
         'inj_ni'    => $CT_cols['chr'].' DEFAULT 0',
+        'wants_to_retire' => 'TINYINT NOT NULL DEFAULT 0',
+        'season'    => 'TINYINT UNSIGNED NOT NULL DEFAULT 1',
         'win_pct' => $CT_cols['win_pct'].' DEFAULT 0', # All-time win pct (across all matches).
     ),
     'memberships' => array(
@@ -832,7 +835,7 @@ function upgrade_database($version, $opts)
         echo (SQLCore::installMVs())
             ? "<font color='green'>OK &mdash; created MV tables</font><br>\n"
             : "<font color='red'>FAILED &mdash; could not create MV tables</font><br>\n";
-            
+
         list($status,$added,$dropped) = SQLCore::reviseEStables();
         echo ($status)
             ? "<font color='green'>OK &mdash; create/update ES tables</font><br>\n" . '<!-- DEV. INFO: Added new cols: '.implode(', ', $added).'. Removed cols: '.implode(', ', $dropped).'.-->'
@@ -861,7 +864,7 @@ function upgrade_database($version, $opts)
             ? "<font color='green'>OK &mdash; synchronised all dynamic stats and properties</font><br>\n"
             : "<font color='red'>FAILED &mdash; could not synchronise all dynamic stats and properties</font><br>\n";
     }
-    
+
     // Done!
     mysql_close($conn);
     return $upgradeMsgs[$version];

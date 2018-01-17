@@ -1877,7 +1877,6 @@ private function _offseason($ALLOW_EDIT, $players)
 {
     global $lng, $rules, $racesNoApothecary, $DEA, $T_ALLOWED_PLAYER_NR;
     $team = $this;
-    $ONE_MILLION = 1000000;
 
     title('<div class="team-management-title">' . $lng->getTrn('profile/team/offseason') . '</div>');
 
@@ -2012,8 +2011,7 @@ private function _offseason($ALLOW_EDIT, $players)
         array_push($team_goods, $apothecary);
     }
 
-    // TODO Calculate programmatically, round up to nearest 10000
-    $offseason_funding = $ONE_MILLION + $team->treasury + (15 * 10000) + (22 * 5000) + (15 * 5000);
+    $offseason_funding = $this->calculateOffseasonFunding();
     $offseason_treasury = $offseason_funding - $team->tv + (10000 * $team->rg_ff);
     ?>
 

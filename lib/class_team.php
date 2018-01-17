@@ -46,6 +46,7 @@ class Team
     public $rdy               = 1; // Ready bool.
     public $imported          = false;
     public $is_retired        = 0;
+    public $current_season    = 0;
 
     public $value = 0; public $tv = 0; # Identical.
     public $ff_bought = 0;
@@ -435,6 +436,26 @@ class Team
         $inUse = explode(',',$inUse);
         $free = array_diff($T_ALLOWED_PLAYER_NR, $inUse);
         return current($free);
+    }
+
+    public function calculateOffseasonFunding() {
+        $ONE_MILLION = 1000000;
+        $query = "SELECT SUM(IF(team1_id = $this->team_id, team1_score, team2_score)) as touchdowns,
+                    SUM(IF(team1_id = $this->team_id, tcas1, tcas2)) as cas,
+                    COUNT(match_id) as played
+                  FROM matches
+                  WHERE f_tour_id IN (
+                    SELECT tournament_id FROM season_tournaments WHERE season_id = $this->current_season
+                  ) AND (team1_id = $this->team_id OR team2_id = $this->team_id) ";
+        $result = mysql_query($query);
+
+        if (!$result || mysql_num_rows($result) == 0) {
+            return $ONE_MILLION;
+        }
+
+        $row = mysql_fetch_assoc($result);
+        $funding = $ONE_MILLION + $this->treasury + 10000 * $row['played'] + 5000 * ($row['touchdowns'] + $row['cas']);
+        return ($funding % 10000 == 0) ? $funding : $funding + 5000;
     }
 
     public function saveText($str) {
