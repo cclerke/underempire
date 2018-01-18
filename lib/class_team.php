@@ -450,7 +450,7 @@ class Team
         $result = mysql_query($query);
 
         if (!$result || mysql_num_rows($result) == 0) {
-            return $ONE_MILLION;
+            return $ONE_MILLION + $this->treasury;
         }
 
         $row = mysql_fetch_assoc($result);

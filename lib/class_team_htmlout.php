@@ -938,6 +938,9 @@ private function _actionBoxes($ALLOW_EDIT, $players)
                     <td><?php echo $team->cheerleaders; ?></td>
                 </tr>
                 <tr>
+                    <td colspan="2"><a href="<?php echo urlcompile(T_URL_PROFILE,T_OBJ_TEAM,$this->team_id,false,false) . '&amp;subsec=offseason'; ?>">Offseason Management</a></td>
+                </tr>
+                <tr>
                     <td colspan=2><hr></td>
                 </tr>
                 <tr>
@@ -1900,6 +1903,7 @@ private function _offseason($ALLOW_EDIT, $players)
         $p->position = "<table style='border-spacing:0px;'><tr><td><img align='left' src='$p->icon' alt='player avatar'></td><td>".$lng->getTrn("position/".strtolower($lng->FilterPosition($p->position)))."</td></tr></table>";
         $p->cost     = $p->wants_to_retire ? $p->value + (20000 * $p->season) : $p->value;
         $p->wants_to_retire = $p->wants_to_retire ? 'Yes' : 'No';
+        $p->season   = ordinal($p->season);
 
         // Characteristic's colors
         foreach (array('ma', 'ag', 'av', 'st') as $chr) {
@@ -1935,8 +1939,8 @@ private function _offseason($ALLOW_EDIT, $players)
         'av'        => array('desc' => 'Av'),
         'skills'    => array('desc' => $lng->getTrn('common/skills'), 'nosort' => true),
         'injs'      => array('desc' => $lng->getTrn('common/injs'), 'nosort' => true),
-        'wants_to_retire'    => array('desc' => 'Retire?'),
-        'season'    => array('desc' => 'Season', 'suffix' => 'st'),
+        'wants_to_retire'    => array('desc' => $lng->getTrn('common/wants_to_retire')),
+        'season'    => array('desc' => $lng->getTrn('common/season')),
         'mv_cp'     => array('desc' => 'Cp'),
         'mv_td'     => array('desc' => 'Td'),
         'mv_intcpt' => array('desc' => 'Int'),
@@ -2347,6 +2351,10 @@ private function _offseason($ALLOW_EDIT, $players)
 
             _updateAvailablePlayers();
         }
+
+        // Required to account for players with MNG that are included in TV
+        updateTV();
+        updateTreasury();
     </script>
 
     <?php
