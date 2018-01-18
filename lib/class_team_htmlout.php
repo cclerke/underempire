@@ -2051,7 +2051,7 @@ private function _offseason($ALLOW_EDIT, $players)
                                             echo "<option value='$i' $selected>$i</option>";
                                     } ?>
                                 </select>
-                            <td id="<?php echo $team_good['id'] . 'cost'; ?>"><?php echo $team_good['cost'] * $team_good['quantity'] / 1000; ?>k</td>
+                            <td id="<?php echo $team_good['id'] . 'cost'; ?>"><?php echo $team_good['cost'] * ($team_good['thing'] == 'Fan factor' ? 0 : $team_good['quantity']) / 1000; ?>k</td>
                             <td id="<?php echo $team_good['id'] . 'value'; ?>"><?php echo $team_good['value']; ?>k</td>
                         </tr>
                     <?php } ?>
@@ -2120,50 +2120,92 @@ private function _offseason($ALLOW_EDIT, $players)
             return $('<td></td>').html(content);
         }
 
-        function _updateAvailablePlayers(fieldID, value, disable) {
+        function _updatePlayerMenus(fieldID, value, disable) {
             var select = $('#' + fieldID);
             $(select).find('option[value="'+value+'"]').attr('disabled', disable);
 
             if (disable) {
                 $(select).find('option[value="'+value+'"]').attr('selected', false);
-                $(select).find('option:not([disabled])').first().attr('selected', 'selected');
+                $(select).find('option:not([disabled])').first().attr('selected', 'selected'); // FIXME
 
-                // TODO Disable keep option
+                var dataAttr = (fieldID == 'new_player') ? 'pos' : 'number';
+                $('select.activePlayer[data-'+dataAttr+'="'+value+'"]').each(function() {
+                    if ($(this).val() != 'keep') {
+                        $(this).find('option[value="keep"]').attr('disabled', disable);
+                    }
+                });
             } else if ($(select).find('option[value="'+value+'"]').length === 0) {
                 $(select).prepend('<option value="'+value+'">'+value+'</option>');
-                // TODO Re-enable keep option
             }
         }
 
-        function _updatePositionLimits() {
+        function _disablePosition(positionID) {
+            _updatePlayerMenus('new_player', positionID, true);
+        }
+
+        function _enablePosition(positionID) {
+            _updatePlayerMenus('new_player', positionID, false);
+        }
+
+        function _disableUniformNumber(number) {
+            _updatePlayerMenus('new_number', number, true);
+        }
+
+        function _enableUniformNumber(number) {
+            _updatePlayerMenus('new_number', number, false);
+        }
+
+        function _enablePlayer(playerID) {
+            _updatePlayerMenus(playerID, 'keep', false);
+        }
+
+        function _updateAvailablePlayers() {
             var positions = {};
+            var numbers = [];
+            var activePlayers = $('select.activePlayer');
+            var totalPlayers = 0;
+
             $('#new_player').find('option').each(function() {
                 positions[$(this).val()] = {
                     qty: 0,
                     max: $(this).data('max'),
-                    cost: $(this).data('value')
+                    cost: $(this).data('value'),
+                    enabled: true
                 }
             });
 
-            $('select.activePlayer').each(function() {
+            $(activePlayers).each(function() {
                 if ($(this).find('option:selected').val() == 'keep') {
                     positions[$(this).data('pos')]['qty'] += 1;
+                    totalPlayers += 1;
                 }
             });
 
             $('tr.rookiePlayer').each(function() {
                 positions[$(this).data('pos')]['qty'] += 1;
+                totalPlayers += 1;
+                numbers.push($(this).data('number'));
             });
 
             var treasury = $('#treasury').val();
             for (var id in positions) {
                 var pos = positions[id];
-                if (pos['qty'] >= pos['max'] || pos['cost'] > treasury) {
-                    _updateAvailablePlayers('new_player', id, true);
+                if (pos['qty'] >= pos['max'] || pos['cost'] > treasury || totalPlayers >= 16) {
+                    pos['enabled'] = false;
+                    _disablePosition(id);
                 } else {
-                    _updateAvailablePlayers('new_player', id, false);
+                    _enablePosition(id);
                 }
             }
+
+            $(activePlayers).each(function() {
+                var player = $(this);
+                if ($(player).find('option:selected').val() != 'keep') {
+                    if (positions[$(player).data('pos')]['enabled'] && $.inArray($(player).data('number'), numbers) == -1) {
+                        _enablePlayer($(player).attr('id'));
+                    }
+                }
+            });
         }
 
         function _calculateGoodCost(good, cost, quantity, initialQuantity) {
@@ -2188,25 +2230,24 @@ private function _offseason($ALLOW_EDIT, $players)
             var row = $(player).closest('tr');
             var option = $(player).find('option:selected');
             var action = $(option).val();
+            var coachList = $('#ac');
 
             switch (action) {
                 case 'fire':
-                    _updateAvailablePlayers('new_number', $(player).data('number'), false);
+                    _enableUniformNumber($(player).data('number'));
                     $(row).css('background-color', 'red');
                     break;
                 case 'coach':
-                    var coachList = $('#ac');
                     coachList.val(Math.min(coachList.find('option:selected').val() + 1, 10)).change();
-                    _updateAvailablePlayers('new_number', $(player).data('number'), false);
+                    _enableUniformNumber($(player).data('number'));
                     $(row).css('background-color', 'grey');
                     break;
                 default:
-                    _updateAvailablePlayers('new_number', $(player).data('number'), true);
+                    coachList.change();
+                    _disableUniformNumber( $(player).data('number'));
                     $(row).css('background-color', 'white');
                     break;
             }
-
-            _updatePositionLimits();
 
             updateTV();
             updateTreasury();
@@ -2239,24 +2280,17 @@ private function _offseason($ALLOW_EDIT, $players)
             player.append(_createRowData("<input type='button' onclick='dropNewPlayer(this)' value='Release'>"));
             $('#rookies').append(player);
 
-            _updateAvailablePlayers('new_number', number, true);
+            _disableUniformNumber(number);
 
             updateTV();
             updateTreasury();
-
-            _updatePositionLimits();
         }
 
         function dropNewPlayer(releaseButton) {
             // Drop newly hired player
             var player = $(releaseButton).closest('tr');
-
-            _updateAvailablePlayers('new_number', $(player).data('number'), false);
-            _updateAvailablePlayers('new_player', $(player).data('pos'), false);
-
+            _enableUniformNumber($(player).data('number'));
             $(player).remove();
-
-            _updatePositionLimits();
 
             updateTV();
             updateTreasury();
@@ -2311,7 +2345,7 @@ private function _offseason($ALLOW_EDIT, $players)
             $('#displayTreasury').html(treasury/1000 + 'k');
             $('#treasury').val(treasury);
 
-            _updatePositionLimits();
+            _updateAvailablePlayers();
         }
     </script>
 
