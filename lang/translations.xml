@@ -114,11 +114,13 @@ For example, english is in <en-GB>, french in <fr-FR>, .......
     <played>Played</played>
     <playedtours>Tours played</playedtours>
     <wontours>Won tours</wontours>
+    <season>Season</season>
 
     <ready>Ready</ready>
     <dead>Dead</dead>
     <sold>Sold</sold>
     <bought>Bought</bought>
+    <wants_to_retire>Retire?</wants_to_retire>
 
     <td>Touchdowns</td>
     <intcpt>Interceptions</intcpt>
@@ -126,14 +128,14 @@ For example, english is in <en-GB>, french in <fr-FR>, .......
     <ki>Kills</ki>
     <bh>Badly hurt</bh>
     <si>Seriously injured</si>
-    <cas>Cacualties</cas>
+    <cas>Casualties</cas>
     <mvp>Most valuable players</mvp>
 
     <pms>Display match average stats</pms>
     <ats>Display all-time stats </ats>
     <uploadnew>Upload new image</uploadnew>
     <notice_simul><![CDATA[<i>Note</i>: Both tables below are sorted simultaneously.]]></notice_simul>
-    <notice_spp><![CDATA[<i>Note</i>: <b>If</b> star players could earn SPP they would have the amount correspondng to the SPP column.]]></notice_spp>
+    <notice_spp><![CDATA[<i>Note</i>: <b>If</b> star players could earn SPP they would have the amount corresponding to the SPP column.]]></notice_spp>
     <sortedagainst>Sorted against</sortedagainst>
 
     <confirm_box>Are you sure?</confirm_box>

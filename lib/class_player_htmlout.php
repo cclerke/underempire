@@ -225,6 +225,14 @@ private function _about($ALLOW_EDIT)
                         <td><b><?php echo $lng->getTrn('common/played');?></b></td>
                         <td><?php echo $p->mv_played;?></td>
                     </tr>
+                    <tr>
+                        <td><b><?php echo $lng->getTrn('common/season');?></b></td>
+                        <td><?php echo ordinal($p->season);?></td>
+                    </tr>
+                    <tr>
+                        <td><b><?php echo $lng->getTrn('common/wants_to_retire');?></b></td>
+                        <td><?php echo $p->wants_to_retire ? 'Yes' : 'No';?></td>
+                    </tr>
                     <?php
                     if (Module::isRegistered('Award')) {
                         ?>
