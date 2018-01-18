@@ -367,7 +367,7 @@ class Player
     public function unbuy() { # "Un-create"
 
         /**
-         * Regret hirering/purchasing player (un-buy).
+         * Regret hiring/purchasing player (un-buy).
          **/
 
         if (!$this->is_unbuyable() || $this->is_sold)
@@ -451,7 +451,6 @@ class Player
         }
 
         $query = "UPDATE players SET inj_ni = GREATEST(inj_ni - 1, 0) WHERE player_id = $this->player_id";
-
         return mysql_query($query);
     }
 
@@ -462,6 +461,11 @@ class Player
     public function renumber($number) {
         global $T_ALLOWED_PLAYER_NR;
         return (in_array($number, $T_ALLOWED_PLAYER_NR) && mysql_query("UPDATE players SET nr = $number WHERE player_id = $this->player_id"));
+    }
+
+    public function retire() {
+        $query = "UPDATE players SET wants_to_retire = 1 WHERE player_id = $this->player_id";
+        return mysql_query($query);
     }
 
     public function dspp($delta) {

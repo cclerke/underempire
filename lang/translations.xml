@@ -313,6 +313,7 @@ For example, english is in <en-GB>, french in <fr-FR>, .......
             <unbuy_player>Un-hire player</unbuy_player>
             <rename_player>Rename player</rename_player>
             <renumber_player>Renumber player</renumber_player>
+            <player_wants_retire>Player wants to retire</player_wants_retire>
             <rename_team>Rename team</rename_team>
             <buy_goods>Buy team goods</buy_goods>
             <drop_goods>Let go of team goods</drop_goods>
@@ -335,6 +336,7 @@ For example, english is in <en-GB>, french in <fr-FR>, .......
                 <unbuy_player> <![CDATA[ Regret hiring a player. 100% refund.<br> This is only possible for players which have not participated in any matches. ]]> </unbuy_player>
                 <rename_player> <![CDATA[ Rename a player. ]]> </rename_player>
                 <renumber_player> <![CDATA[ Renumber a player. ]]> </renumber_player>
+                <player_wants_retire> <![CDATA[ The player has indicated they want to retire. You can convince them to stay with a bit of money. ]]> </player_wants_retire>
                 <rename_team> <![CDATA[ Rename your team. ]]> </rename_team>
                 <buy_goods> <![CDATA[ Buy team goods. ]]> </buy_goods>
                 <buy_goods_warn> <![CDATA[ <br><br>Please note that re-roll prices are currently <font color='red'><b>doubled</b></font>.<br>If your intention is to buy a non-doubled RR, then buy it anyway and reclaim the lost gold by asking an admin to reinsert the overcharged amount. ]]> </buy_goods_warn>

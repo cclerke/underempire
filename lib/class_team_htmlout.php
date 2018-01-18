@@ -225,6 +225,7 @@ public function handleActions($ALLOW_EDIT)
         case 'unbuy_player':    status($p->unbuy()); break;
         case 'rename_player':   status($p->rename($_POST['name'])); break;
         case 'renumber_player': status($p->renumber($_POST['number'])); break;
+        case 'player_wants_retire': status($p->retire()); break;
         case 'rename_team':     status($team->rename($_POST['name'])); break;
         case 'buy_goods':       status($team->buy($_POST['thing'])); break;
         case 'drop_goods':      status($team->drop($_POST['thing'])); break;
@@ -1395,6 +1396,7 @@ private function _teamManagementBox($players, $team) {
             'unbuy_player'      => $lng->getTrn($base.'/box_tm/unbuy_player'),
             'rename_player'     => $lng->getTrn($base.'/box_tm/rename_player'),
             'renumber_player'   => $lng->getTrn($base.'/box_tm/renumber_player'),
+            'player_wants_retire' => $lng->getTrn($base.'/box_tm/player_wants_retire'),
             'rename_team'       => $lng->getTrn($base.'/box_tm/rename_team'),
             'buy_goods'         => $lng->getTrn($base.'/box_tm/buy_goods'),
             'drop_goods'        => $lng->getTrn($base.'/box_tm/drop_goods'),
@@ -1405,7 +1407,7 @@ private function _teamManagementBox($players, $team) {
 
         # If one of these are selected from the menu, a JavaScript confirm prompt is displayed before submitting.
         # Note: Don't add "hire_player" here - players may be un-bought if not having played any games.
-        $tmange_confirm = array('hire_journeyman', 'fire_player', 'buy_goods', 'drop_goods');
+        $tmange_confirm = array('hire_journeyman', 'fire_player', 'buy_goods', 'drop_goods', 'player_wants_retire');
 
         // Set default choice.
         if (!isset($_POST['menu_tmanage'])) {
@@ -1624,6 +1626,31 @@ private function _teamManagementBox($players, $team) {
                 ?>
                 </select>
                 <input type="hidden" name="type" value="renumber_player">
+                <?php
+                break;
+
+            /***************
+             * Retire player
+             **************/
+
+            case 'player_wants_retire':
+                echo $lng->getTrn('profile/team/box_tm/desc/player_wants_retire');
+                ?>
+                <hr><br>
+                <?php echo $lng->getTrn('common/player');?>:<br>
+                <select name="player">
+                    <?php
+                    $DISABLE = true;
+                    foreach ($players as $p) {
+                        if ($p->is_dead || $p->is_sold)
+                            continue;
+
+                        echo "<option value='$p->player_id'>$p->nr $p->name</option>\n";
+                        $DISABLE = false;
+                    }
+                    ?>
+                </select>
+                <input type="hidden" name="type" value="player_wants_retire">
                 <?php
                 break;
 
