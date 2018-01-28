@@ -178,7 +178,7 @@ switch ($_GET['type'])
           Module::run('PDFMatchReport', $argv);
           break;
 
-    /* Veridy team name - AJAX use */
+    /* Verify team name - AJAX use */
     case 'verifyteam':
         if (isset($_POST['tname'])) {
             if (get_magic_quotes_gpc()) {

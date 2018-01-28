@@ -47,6 +47,7 @@ class Team
     public $imported          = false;
     public $is_retired        = 0;
     public $current_season    = 0;
+    public $is_offseason      = false;
 
     public $value = 0; public $tv = 0; # Identical.
     public $ff_bought = 0;
@@ -77,6 +78,7 @@ class Team
         unset($this->retired); // We use $this->is_retired instead.
         $this->imported = ($this->imported == 1); // Make boolean.
         $this->value = $this->tv;
+        $this->is_offseason = $this->isInOffseason();
 
         return true;
     }
@@ -339,7 +341,7 @@ class Team
     public function setReady($bool) {
 
         mysql_query("UPDATE teams SET rdy = ".(($bool) ? 1 : 0)." WHERE team_id = $this->team_id");
-        $t->rdy = $bool;
+        $this->rdy = $bool;
         return true;
     }
 
@@ -436,6 +438,14 @@ class Team
         $inUse = explode(',',$inUse);
         $free = array_diff($T_ALLOWED_PLAYER_NR, $inUse);
         return current($free);
+    }
+
+    public function isInOffseason() {
+        $query = "SELECT is_offseason
+                  FROM seasons
+                  WHERE season_id = $this->current_season";
+
+        return SQLBoolEval($query);
     }
 
     public function calculateOffseasonFunding() {

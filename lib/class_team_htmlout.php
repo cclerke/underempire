@@ -1949,10 +1949,11 @@ private function _offseason($ALLOW_EDIT, $players)
             }
         }
 
+        $coachOption = $p->wants_to_retire == "Yes" ? "<option value='coach'>Keep as coach</option>" : "";
         $p->action = "<select class='activePlayer' name='player$p->player_id' id='player$p->player_id' data-cost='$p->cost' data-value='$p->value' data-pos='$p->f_pos_id' data-number='$p->nr' onchange='handleActivePlayerStatusChange(this)'>" .
                 "<option value='keep'>Keep</option>" .
                 "<option value='fire'>Release</option>" .
-                "<option value='coach'>Keep as coach</option>" .
+                 $coachOption .
             "</select>";
     }
 
@@ -1978,11 +1979,7 @@ private function _offseason($ALLOW_EDIT, $players)
         'cost'      => array('desc' => $lng->getTrn('common/cost'), 'kilo' => true, 'suffix' => 'k'),
         'action'    => array('desc' => 'Action', 'nosort' => true)
     );
-    ?>
 
-    <form method="POST" name="offseason">
-
-    <?php
     HTMLOUT::sort_table(
         $team->name.' roster',
         urlcompile(T_URL_PROFILE,T_OBJ_TEAM,$team->team_id,false,false).'&amp;detailed=0',
@@ -2092,6 +2089,10 @@ private function _offseason($ALLOW_EDIT, $players)
                     </tr>
 
                     <tr>
+                        <td colspan=3>Players</td>
+                        <td id="displayPlayers"><?php echo count($active_players); ?></td>
+                    </tr>
+                    <tr>
                         <td colspan=3>TV</td>
                         <td id="displayTV"><?php echo $team->tv/1000 . 'k'; ?></td>
                     </tr>
@@ -2099,8 +2100,12 @@ private function _offseason($ALLOW_EDIT, $players)
                         <td colspan=3><?php echo $lng->getTrn('matches/report/treas')?></td>
                         <td id="displayTreasury"><?php echo $offseason_treasury/1000 . 'k'; ?></td>
                     </tr>
+                    <tr>
+                        <td colspan=4><hr></td>
+                    </tr>
                 </tbody>
             </table>
+            <?php if ($ALLOW_EDIT && $team->is_offseason) { ?><input type="button" value="Submit Roster" onclick="submit()"><?php } ?>
             <input type="hidden" id="treasury" name="treasury" value="<?php echo $offseason_treasury; ?>">
             <input type="hidden" id="initialTreasury" name="initialTreasury" value="<?php echo $offseason_funding; ?>">
         </div>
@@ -2140,11 +2145,9 @@ private function _offseason($ALLOW_EDIT, $players)
             <input type="text" name="name" id="new_player_name">
 
             <br><br>
-            <input type="button" name="button" value="OK" onclick="hirePlayer()">
+            <input type="button" name="button" value="Hire" onclick="hirePlayer()">
         </div>
     </div>
-
-    </form>
 
     <script>
         function _createRowData(content) {
@@ -2237,6 +2240,8 @@ private function _offseason($ALLOW_EDIT, $players)
                     }
                 }
             });
+
+            $('#displayPlayers').html(totalPlayers);
         }
 
         function _calculateGoodCost(good, cost, quantity, initialQuantity) {
@@ -2303,9 +2308,17 @@ private function _offseason($ALLOW_EDIT, $players)
             var playerType = $('#new_player option:selected');
             var price = $(playerType).data('value');
             var number = $('#new_number').val();
-            var player = $('<tr></tr>').addClass('rookiePlayer').attr({'data-pos': $(playerType).val(), 'data-cost': price, 'data-number': number});
+            var name = $('#new_player_name').val();
+
+            var player = $('<tr></tr>').addClass('rookiePlayer').attr({
+                'data-pos': $(playerType).val(),
+                'data-cost': price,
+                'data-number': number,
+                'data-name': name
+            });
+
             player.append(_createRowData(number));
-            player.append(_createRowData($('#new_player_name').val()));
+            player.append(_createRowData(name));
             player.append(_createRowData($(playerType).data('pos')));
             player.append(_createRowData(price/1000 + 'k'));
             player.append(_createRowData("<input type='button' onclick='dropNewPlayer(this)' value='Release'>"));
@@ -2378,6 +2391,82 @@ private function _offseason($ALLOW_EDIT, $players)
 
             _updateAvailablePlayers();
         }
+
+        function validate() {
+            if ($('#treasury').val() < 0) {
+                alert('Treasury may not be negative.');
+                return false;
+            }
+
+            var rosterSize = 0;
+            $('select.activePlayer').each(function() {
+                if ($(this).find('option:selected').val() == 'keep') {
+                    rosterSize += 1;
+                }
+            });
+
+            $('tr.rookiePlayer').each(function() {
+               rosterSize += 1;
+            });
+
+            if (rosterSize < 11 || rosterSize > 16) {
+                alert('Roster must have between 11 and 16 players. You currently have ' + rosterSize + '.');
+                return false;
+            }
+
+            return true;
+        }
+
+        <?php if ($ALLOW_EDIT && $team->is_offseason) { ?>
+        function submit() {
+            if (validate()) {
+                var data = {
+                    'team_id': <?php echo $team->team_id; ?>,
+                    'active_players': [],
+                    'rookies': [],
+                    'team_goods': []
+                };
+
+                $('select.activePlayer').each(function() {
+                    data['active_players'].push({
+                        'id': $(this).attr('id'),
+                        'action': $(this).find('option:selected').val(),
+                        'cost': $(this).data('cost')
+                    });
+                });
+
+                $('tr.rookiePlayer').each(function() {
+                    data['rookies'].push({
+                        'number': $(this).data('number'),
+                        'position': $(this).data('pos'),
+                        'name': $(this).data('name'),
+                        'cost': $(this).data('cost')
+                    });
+                });
+
+                $('select.teamGoods').each(function() {
+                    data['team_goods'].push({
+                        'id': $(this).attr('id'),
+                        'quantity': $(this).find('option:selected').val(),
+                        'initial': $(this).data('initial')
+                    });
+                });
+
+                $.ajax({
+                    type: "POST",
+                    url: "offseason_webservice.php",
+                    data: data,
+                    dataType: 'json',
+                    success: function(result){
+                        alert(result['message']);
+                        if (result['status'] == 'success'){
+                            window.location = 'index.php?section=objhandler&type=1&obj=2&obj_id=<?php echo $team->team_id; ?>&subsec=man';
+                        }
+                    }
+                });
+            }
+        }
+        <?php } ?>
 
         // Required to account for players with MNG that are included in TV
         updateTV();
