@@ -2004,7 +2004,7 @@ $skillarray	= array (
 		78 => 'Two Heads',
 		79 => 'Very Long Legs',
 	),
-	# Extraordinay
+	# Extraordinary
 	'E'	=> array (
 		90 => 'Always Hungry',
 		91 => 'Ball & Chain',
@@ -2029,6 +2029,7 @@ $skillarray	= array (
 		110 => 'Throw Team-Mate',
 		111 => 'Titchy',
 		112 => 'Wild Animal',
+        130 => 'Swoop'
 	),
 );
 
