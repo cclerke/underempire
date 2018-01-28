@@ -1,8 +1,8 @@
 <?php
 
-/* 
+/*
     IMPORTANT!
-    Whenever the values og this file are changed you must run the 
+    Whenever the values og this file are changed you must run the
     "Synchronise the PHP-stored BB game data" under "DB maintenance" from the "Admin -> Core panel" menu.
 */
 
@@ -138,9 +138,9 @@ $DEA = array (
 				'icon'			=> 'minotaur1',
 			    'pos_id'        => 12,
 			)
-		)	
+		)
 	),
-	
+
 	'Chaos Dwarf'	=> array (
 		'other'	=> array (
 			'rr_cost' => 70000,
@@ -277,7 +277,7 @@ $DEA = array (
 			)
 		)
 	),
-	
+
 	'Dwarf'	=> array (
 		'other'	=> array (
 			'rr_cost' => 40000,
@@ -352,7 +352,7 @@ $DEA = array (
 			)
 		)
 	),
-	
+
 	'Elf'	=> array (
 		'other'	=> array (
 			'rr_cost' => 50000,
@@ -414,7 +414,7 @@ $DEA = array (
 			)
 		)
 	),
-	
+
 	'Goblin'	=> array (
 		'other'	=> array (
 			'rr_cost' => 60000,
@@ -487,6 +487,32 @@ $DEA = array (
 				'icon'			=> 'fanatic1',
 			    'pos_id'        => 64,
 			),
+            'Doom Diver'	=> array (
+                'ma'        	=> 6,
+                'st'        	=> 2,
+                'ag'        	=> 3,
+                'av'        	=> 7,
+                'def'	    => array (104, 108, 130),
+                'norm'		=> array ('A'),
+                'doub'		=> array ('G', 'S', 'P'),
+                'qty'			=> 1,
+                'cost'			=> 60000,
+                'icon'			=> 'goblin1',
+                'pos_id'        => 300,
+            ),
+            'Ooligan'	=> array (
+                'ma'        	=> 6,
+                'st'        	=> 2,
+                'ag'        	=> 3,
+                'av'        	=> 7,
+                'def'	    => array (23, 104, 108, 72, 97),
+                'norm'		=> array ('A'),
+                'doub'		=> array ('G', 'S', 'P'),
+                'qty'			=> 11,
+                'cost'			=> 70000,
+                'icon'			=> 'goblin1',
+                'pos_id'        => 301,
+            ),
 			'Troll'	=> array (
 				'ma'        	=> 4,
  				'st'        	=> 5,
@@ -502,7 +528,7 @@ $DEA = array (
 			)
 		)
 	),
-	
+
 	'Halfling'	=> array (
 		'other'	=> array (
 			'rr_cost' => 60000,
@@ -538,9 +564,9 @@ $DEA = array (
 			)
 		)
 	),
-	
-	
-	
+
+
+
 	'High Elf'	=> array (
 		'other'	=> array (
 			'rr_cost' => 50000,
@@ -602,7 +628,7 @@ $DEA = array (
 			)
 		)
 	),
-	
+
 	'Human'	=> array (
 		'other'	=> array (
 			'rr_cost' => 50000,
@@ -677,7 +703,7 @@ $DEA = array (
 			)
 		)
 	),
-	
+
 	'Khemri'	=> array (
 		'other'	=> array (
 			'rr_cost' => 70000,
@@ -739,7 +765,7 @@ $DEA = array (
 			)
 		)
 	),
-	
+
 	'Lizardman'	=> array (
 		'other'	=> array (
 			'rr_cost' => 60000,
@@ -788,7 +814,7 @@ $DEA = array (
 			)
 		)
 	),
-	
+
 	'Orc'	=> array (
 		'other'	=> array (
 			'rr_cost' => 60000,
@@ -876,7 +902,7 @@ $DEA = array (
 			)
 		)
 	),
-		
+
 	'Necromantic'	=> array (
 		'other'	=> array (
 			'rr_cost' => 70000,
@@ -950,8 +976,8 @@ $DEA = array (
 			    'pos_id'        => 134,
 			)
 		)
-	),	
-	
+	),
+
 	'Norse'	=> array (
 		'other'	=> array (
 			'rr_cost' => 60000,
@@ -1038,8 +1064,8 @@ $DEA = array (
 			    'pos_id'        => 145,
 			)
 		)
-	),	
-	
+	),
+
 	'Nurgle'	=> array (
 		'other'	=> array (
 			'rr_cost' => 70000,
@@ -1100,8 +1126,8 @@ $DEA = array (
 			    'pos_id'        => 153,
 			)
 		)
-	),	
-		
+	),
+
 	'Ogre'	=> array (
 		'other'	=> array (
 			'rr_cost' => 70000,
@@ -1135,10 +1161,10 @@ $DEA = array (
 				'icon'			=> 'ogre1',
 			    'pos_id'        => 161,
 			)
-			
+
 		)
-	),	
-	
+	),
+
 	'Undead'	=> array (
 		'other'	=> array (
 			'rr_cost' => 70000,
@@ -1212,9 +1238,9 @@ $DEA = array (
 			    'pos_id'        => 174,
 			)
 		)
-	),	
-	
-		
+	),
+
+
 	'Vampire'	=> array (
 		'other'	=> array (
 			'rr_cost' => 70000,
@@ -1250,8 +1276,8 @@ $DEA = array (
 			)
 		)
 	),
-		
-		
+
+
 	'Skaven'	=> array (
 		'other'	=> array (
 			'rr_cost' => 60000,
@@ -1326,7 +1352,7 @@ $DEA = array (
 			)
 		)
 	),
-	
+
 	'Wood Elf'	=> array (
 		'other'	=> array (
 			'rr_cost' => 50000,
@@ -1880,15 +1906,15 @@ $stars = array(
    )
 );
 
-$sparray = array (	
+$sparray = array (
 	'Rookie'	=> array (
 		'SPP'	=> 0,
-		'SPR'	=> 0	
+		'SPR'	=> 0
 	),
 	'Experienced'	=> array (
 		'SPP'	=> 6,
 		'SPR'	=> 1
-			
+
 	),
 	'Veteran'	=> array (
 		'SPP'	=> 16,
@@ -1897,16 +1923,16 @@ $sparray = array (
 	),
 	'Emerging Star'	=> array (
 		'SPP'	=> 31,
-		'SPR'	=> 3	
+		'SPR'	=> 3
 
 	),
 	'Star'	=> array (
 		'SPP'	=> 51,
-		'SPR'	=> 4	
+		'SPR'	=> 4
 	),
 	'Super Star'	=> array (
 		'SPP'	=> 76,
-		'SPR'	=> 5	
+		'SPR'	=> 5
 	),
 	'Legend'	=> array (
 		'SPP'	=> 176,
@@ -1914,7 +1940,7 @@ $sparray = array (
 	)
 );
 
-$skillarray	= array (	
+$skillarray	= array (
     # ID => "skill name"
     # Note jumps in ID numbering, this allowed future skills to be added still maintaining some sensible ordering.
 	'G'	=> array (
@@ -2023,7 +2049,7 @@ $IllegalSkillCombinations = array(
     91  => array(22, 5, 7, 8, 10),
 );
 
-// Instead of purchasing an Apothecary, Necromantic and Undead teams use the services of a Necromancer. 
+// Instead of purchasing an Apothecary, Necromantic and Undead teams use the services of a Necromancer.
 // This means these teams may also recieve free zombies.
 $racesHasNecromancer = array(T_RACE_NECROMANTIC, T_RACE_UNDEAD);
 // Khemri, Necromantic, Nurgle and Undead teams may not purchase or use an Apothecary.
@@ -2077,7 +2103,7 @@ $inducements = array (
     )
 );
 
-/* 
+/*
     IMPORTANT!
     Whenever the below values are changed you must run the
     "Re-install DB back-end procedures and functions" under "DB maintenance" from the "Admin -> Core panel" menu.

@@ -575,7 +575,7 @@ For example, english is in <en-GB>, french in <fr-FR>, .......
   <lineman>Lineman</lineman>
   <runner>Runner</runner>
   <assassin>Assassin</assassin>
-  <witchelf>Witchelf</witchelf>
+  <witchelf>Witch Elf</witchelf>
 
   <blocker>Blocker</blocker>
   <trollslayer>Troll Slayer</trollslayer>
@@ -585,6 +585,8 @@ For example, english is in <en-GB>, french in <fr-FR>, .......
   <bombardier>Bombardier</bombardier>
   <pogoer>Pogoer</pogoer>
   <looney>Looney</looney>
+  <doomdiver>Doom Diver</doomdiver>
+  <ooligan>'Ooligan</ooligan>
   <fanatic>Fanatic</fanatic>
   <troll>Troll</troll>
 
