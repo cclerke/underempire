@@ -5,8 +5,8 @@
  *************************/
 preg_match('/settings_(.*?)\.php/', __FILE__, $match);
 $get_lid = $match[1];
-$settings['stylesheet'] = 1; 
-$settings['lang']            = 'en-GB';
+$settings['stylesheet'] = 1;
+$settings['lang'] = 'en-GB';
 
 /*********************
  *   General
@@ -15,19 +15,19 @@ $settings['lang']            = 'en-GB';
 // Change the Title after the = sign.  Do not change things before the = sign.
 $settings['banner_subtitle'] = 'New here?  Visit theNAF.net/Leagues for more information';
 // Button text for league URL.
-$settings['league_url_name'] = 'League Forum'; 
-// Stylesheet for text etc. Currently stylesheet 1 is the only existing stylesheet, so don't change it!  
-// Default language. Existing: en-GB, es-ES, de-DE, fr-FR, it-IT. 
-// Default is true. Generate coach, team and player links on the front page?       
+$settings['league_url_name'] = 'League Forum';
+// Stylesheet for text etc. Currently stylesheet 1 is the only existing stylesheet, so don't change it!
+// Default language. Existing: en-GB, es-ES, de-DE, fr-FR, it-IT.
+// Default is true. Generate coach, team and player links on the front page?
 $settings['fp_links']        = true;
-$settings['league_name']     = get_alt_col('league_prefs','f_lid',$get_lid,'league_name'); 
+$settings['league_name']     = get_alt_col('league_prefs','f_lid',$get_lid,'league_name');
 $settings['banner_title']    = get_alt_col('league_prefs','f_lid',$get_lid,'league_name');
 // URL of league home page, if you have one. If not then leave this empty, that is = '' (two quotes only), which will disable the button.
-$settings['league_url']      = get_alt_col('league_prefs','f_lid',$get_lid,'forum_url');    
-// The welcome text appears below the title.           
-$settings['welcome']         = get_alt_col('league_prefs','f_lid',$get_lid,'welcome'); 
+$settings['league_url']      = get_alt_col('league_prefs','f_lid',$get_lid,'forum_url');
+// The welcome text appears below the title.
+$settings['welcome']         = get_alt_col('league_prefs','f_lid',$get_lid,'welcome');
 // The next text appears when you click the rules button.
-$settings['rules']           = get_alt_col('league_prefs','f_lid',$get_lid,'rules'); 
+$settings['rules']           = get_alt_col('league_prefs','f_lid',$get_lid,'rules');
 $get_prime = get_alt_col('league_prefs','f_lid',$get_lid,'prime_tid');
 $get_second = get_alt_col('league_prefs','f_lid',$get_lid,'second_tid');
 
@@ -47,7 +47,7 @@ $rules['player_refund']         = 0;        // Player sell value percentage. Def
 $rules['journeymen_limit']      = 11;       // Until a team can field this number of players, it may fill team positions with journeymen.
 $rules['post_game_ff']          = false;    // Default is false. Allows teams to buy and drop fan factor even though their first game has been played.
 
-$rules['initial_treasury']      = 1100000;  // Default is 1000000.
+$rules['initial_treasury']      = 1000000;  // Default is 1000000.
 $rules['initial_rerolls']       = 0;        // Default is 0.
 $rules['initial_fan_factor']    = 0;        // Default is 0.
 $rules['initial_ass_coaches']   = 0;        // Default is 0.
@@ -92,24 +92,40 @@ $settings['fp_messageboard']['show_match_summaries'] = true; // Default is true.
  *********************/
 $settings['fp_standings'] = array(
 # This will display a standings box of the top 6 teams in node (league, division or tournament) with ID = 1
-array(
-'id' => $get_prime, # Node ID
-'box_ID' => 1,
-// Please note: 'type' may be either one of: 'league', 'division' or 'tournament'
-'type' => 'tournament', # This sets the node to be a tournament. I.e. this will make a standings box for the tournament with ID = 1
-'infocus' => true, # If true a random team from the standings will be selected and its top players displayed.
-/*
-The house ranking system (HRS) NUMBER to sort the table against.
-Note, this is ignored for "type = tournament", since tours have an assigned HRS.
-Also note that using HRSs with fields such as points (pts) for leagues/divisions standings makes no sense as they are tournament specific fields (i.e. it makes no sense to sum the points for teams across different tours to get the teams' "league/division points", as the points definitions for tours may vary).
-*/
-'HRS' => get_alt_col('tours','tour_id',$get_prime,'rs'), # Note: this must be a existing and valid HRS number from the main settings.php file.
-'title' => get_alt_col('tours','tour_id',$get_prime,'name'), # Table title
-'length' => 40, # Number of entries in table
-# Format: "Displayed table column name" => "OBBLM field name". For the OBBLM fields available see http://nicholasmr.dk/obblmwiki/index.ph ... tomization
-'fields' => array('Name' => 'name', 'PTS' => 'pts', 'TV' => 'tv', 'CAS' => 'cas', 'W' => 'won', 'L' => 'lost', 'D' => 'draw', 'GF' => 'gf', 'GA' => 'ga',),
-),
-    
+    array(
+        'id' => $get_prime, # Node ID
+        'box_ID' => 1,
+        // Please note: 'type' may be either one of: 'league', 'division' or 'tournament'
+        'type' => 'tournament', # This sets the node to be a tournament. I.e. this will make a standings box for the tournament with ID = 1
+        'infocus' => true, # If true a random team from the standings will be selected and its top players displayed.
+        /*
+        The house ranking system (HRS) NUMBER to sort the table against.
+        Note, this is ignored for "type = tournament", since tours have an assigned HRS.
+        Also note that using HRSs with fields such as points (pts) for leagues/divisions standings makes no sense as they are tournament specific fields (i.e. it makes no sense to sum the points for teams across different tours to get the teams' "league/division points", as the points definitions for tours may vary).
+        */
+        'HRS' => get_alt_col('tours','tour_id',$get_prime,'rs'), # Note: this must be a existing and valid HRS number from the main settings.php file.
+        'title' => get_alt_col('tours','tour_id',$get_prime,'name'), # Table title
+        'length' => 40, # Number of entries in table
+        # Format: "Displayed table column name" => "OBBLM field name". For the OBBLM fields available see http://nicholasmr.dk/obblmwiki/index.ph ... tomization
+        'fields' => array('Name' => 'name', 'PTS' => 'pts', 'TV' => 'tv', 'CAS' => 'cas', 'W' => 'won', 'L' => 'lost', 'D' => 'draw', 'GF' => 'gf', 'GA' => 'ga',),
+    ),
+    array(
+        'id' => $get_second, # Node ID
+        'box_ID' => 1,
+        // Please note: 'type' may be either one of: 'league', 'division' or 'tournament'
+        'type' => 'tournament', # This sets the node to be a tournament. I.e. this will make a standings box for the tournament with ID = 1
+        'infocus' => true, # If true a random team from the standings will be selected and its top players displayed.
+        /*
+        The house ranking system (HRS) NUMBER to sort the table against.
+        Note, this is ignored for "type = tournament", since tours have an assigned HRS.
+        Also note that using HRSs with fields such as points (pts) for leagues/divisions standings makes no sense as they are tournament specific fields (i.e. it makes no sense to sum the points for teams across different tours to get the teams' "league/division points", as the points definitions for tours may vary).
+        */
+        'HRS' => get_alt_col('tours','tour_id',$get_second,'rs'), # Note: this must be a existing and valid HRS number from the main settings.php file.
+        'title' => get_alt_col('tours','tour_id',$get_second,'name'), # Table title
+        'length' => 40, # Number of entries in table
+        # Format: "Displayed table column name" => "OBBLM field name". For the OBBLM fields available see http://nicholasmr.dk/obblmwiki/index.ph ... tomization
+        'fields' => array('Name' => 'name', 'PTS' => 'pts', 'TV' => 'tv', 'CAS' => 'cas', 'W' => 'won', 'L' => 'lost', 'D' => 'draw', 'GF' => 'gf', 'GA' => 'ga',),
+    )
 );
 
 /*********************
