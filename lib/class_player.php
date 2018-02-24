@@ -99,6 +99,7 @@ class Player
     public $inj_ag = 0;
     public $inj_av = 0;
     public $inj_ni = 0;
+    public $cured_ni = 0;
 
     // Player status
     public $is_sold             = false;
@@ -150,6 +151,7 @@ class Player
         $this->def_skills = empty($this->def_skills) ? array() : explode(',', $this->def_skills);
         $this->setSkills();
 
+        $this->inj_ni               = $this->inj_ni - $this->cured_ni;
         $this->is_dead              = ($this->status == DEAD);
         $this->is_mng               = !in_array($this->status, array(NONE, DEAD));
         $this->is_sold              = (bool) $this->date_sold;
@@ -450,7 +452,7 @@ class Player
             return false;
         }
 
-        $query = "UPDATE players SET inj_ni = GREATEST(inj_ni - 1, 0) WHERE player_id = $this->player_id";
+        $query = "UPDATE players SET cured_ni = LEAST(cured_ni + 1, inj_ni) WHERE player_id = $this->player_id";
         return mysql_query($query);
     }
 

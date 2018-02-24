@@ -151,6 +151,7 @@ $core_tables = array(
         'inj_ag'    => $CT_cols['chr'].' DEFAULT 0',
         'inj_av'    => $CT_cols['chr'].' DEFAULT 0',
         'inj_ni'    => $CT_cols['chr'].' DEFAULT 0',
+        'cured_ni'  => 'TINYINT NOT NULL DEFAULT 0',
         'wants_to_retire' => 'TINYINT NOT NULL DEFAULT 0',
         'season'    => 'TINYINT UNSIGNED NOT NULL DEFAULT 1',
         'win_pct' => $CT_cols['win_pct'].' DEFAULT 0', # All-time win pct (across all matches).
