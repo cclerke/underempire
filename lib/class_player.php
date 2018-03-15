@@ -228,7 +228,7 @@ class Player
             ir1_d1 AS 'D11', ir1_d2 AS 'D12',
             ir2_d1 AS 'D21', ir2_d2 AS 'D22',
             ir3_d1 AS 'D31', ir3_d2 AS 'D32'
-        FROM match_data, matches WHERE f_match_id = match_id AND f_player_id = $this->player_id AND (ir1_d1 != 0 OR ir1_d2 != 0 OR ir2_d1 != 0 OR ir2_d2 != 0 OR ir3_d1 != 0 OR ir3_d2 != 0) ORDER BY date_played DESC LIMIT $N_allowed_new_skills";
+        FROM match_data, matches WHERE f_match_id = match_id AND f_player_id = $this->player_id ORDER BY date_played DESC";
         $result = mysql_query($query);
         $IRs = array();
         while ($D6s = mysql_fetch_assoc($result)) {
@@ -241,7 +241,7 @@ class Player
                 }
             }
         }
-        $allowed = $NONE_ALLOWED = array('N' => false, 'D' => false, 'C' => array());
+        $allowed = $NONE_ALLOWED = array('N' => true, 'D' => false, 'C' => array());
         foreach (array_reverse($IRs) as $IR) {
             list($D1,$D2) = $IR;
             switch ($D1+$D2) {
@@ -264,7 +264,7 @@ class Player
             If a player has SPPs enough for a new skill but has NOT (ever) improvement rolled 2xD6 according to match_data entries,
             then allow player to select amongst all possible skills.
         */
-        if ($N_allowed_new_skills > 0 && (count($IRs) > 0 || $rules['force_IR'])) {
+        if ($N_allowed_new_skills > 0 && (count($IRs) > 0 || $rules['force_IR'] || $this-mv_played === 0)) {
             if (!$allowed['N']) {$this->choosable_skills['norm'] = array();}
             if (!$allowed['D']) {$this->choosable_skills['doub'] = array();}
             $this->choosable_skills['chr'] = array();
