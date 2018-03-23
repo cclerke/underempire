@@ -264,7 +264,7 @@ class Player
             If a player has SPPs enough for a new skill but has NOT (ever) improvement rolled 2xD6 according to match_data entries,
             then allow player to select amongst all possible skills.
         */
-        if ($this->mv_played === 0) $allowed['N'] = true;
+        if ($this->mv_played == 0) $allowed['N'] = true;
         if ($N_allowed_new_skills > 0 && (count($IRs) > 0 || $rules['force_IR'] || $this-mv_played === 0)) {
             if (!$allowed['N']) {$this->choosable_skills['norm'] = array();}
             if (!$allowed['D']) {$this->choosable_skills['doub'] = array();}
