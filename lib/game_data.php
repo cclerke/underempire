@@ -658,7 +658,7 @@ $DEA = array (
  				'norm'		=> array ('G', 'A'),
  				'doub'		=> array ('S', 'P'),
  				'qty'			=> 4,
-				'cost'			=> 70000,
+				'cost'			=> 60000,
 				'icon'			=> 'hcatcher1',
 			    'pos_id'        => 91,
 			),
