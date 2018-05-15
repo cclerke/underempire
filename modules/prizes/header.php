@@ -10,5 +10,6 @@ define('PRIZE_3RD',     3);
 define('PRIZE_LETHAL',  4);
 define('PRIZE_FAIR',    5);
 define('PRIZE_LUCKY',   6);
+define('PRIZE_COACH',   7);
 
 ?>

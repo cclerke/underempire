@@ -92,7 +92,8 @@ public static function getTypes()
         PRIZE_3RD => 'Third place',
         PRIZE_LETHAL => 'Most lethal',
         PRIZE_FAIR => 'Fair play',
-        PRIZE_LUCKY => 'Most lucky'
+        PRIZE_LUCKY => 'Most lucky',
+        PRIZE_COACH => 'Best coached',
     );
 }
 
