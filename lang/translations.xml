@@ -92,6 +92,7 @@ For example, english is in <en-GB>, french in <fr-FR>, .......
 
     <match>Match</match>
     <round>Round</round>
+    <season>Season</season>
     <tournament>Tournament</tournament>
     <division>Division</division>
     <league>League</league>
@@ -729,6 +730,9 @@ For example, english is in <en-GB>, french in <fr-FR>, .......
   <throwteammate>Throw Team-Mate</throwteammate>
   <titchy>Titchy</titchy>
   <wildanimal>Wild Animal</wildanimal>
+  <monstrousmouth>Monstrous Mouth</monstrousmouth>
+  <timmmber>Timmm-ber</timmmber>
+  <weepingblades>Weeping Blades</weepingblades>
   <swoop>Swoop</swoop>
 </skill>
 

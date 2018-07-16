@@ -541,3 +541,175 @@ $inducements['Halfling Master Chef']['reduced_cost'] = 50000;
 $inducements['Bribes']['reduced_cost'] = 50000;
 $inducements['Bribes']['reduced_cost_races'] = array(6);
 
+//
+// BB2016 Star Player additions
+//
+
+$stars['Rasta Tailspike'] = array (
+    'id'    => -62,
+    'ma'    => 8,
+    'st'    => 3,
+    'ag'    => 3,
+    'av'    => 7,
+    'def'   => array (99, 20, 73),
+    'cost'  => 110000,
+    'icon'  => 'star',
+    'races' => array(19)
+);
+$stars['Frank N Stein'] = array (
+    'id'    => -63,
+    'ma'    => 4,
+    'st'    => 5,
+    'ag'    => 1,
+    'av'    => 9,
+    'def'   => array (99, 50, 54, 103, 57, 59),
+    'cost'  => 210000,
+    'icon'  => 'star',
+    'races' => array(9, 13, 17)
+);
+$stars['Bilerot Vomitflesh'] = array (
+    'id'    => -64,
+    'ma'    => 4,
+    'st'    => 5,
+    'ag'    => 2,
+    'av'    => 9,
+    'def'   => array (99, 3, 72, 74),
+    'cost'  => 180000,
+    'icon'  => 'star',
+    'races' => array(15, 1)
+);
+// Added in BB2016 DZ1
+$stars['Guffle Pusmaw'] = array ( // Added to Chaos, Chaos Pact in Spike! #1. Cost reduced from 220k to 210k.
+    'id'    => -65,
+    'ma'    => 5,
+    'st'    => 3,
+    'ag'    => 4,
+    'av'    => 9,
+    'def'   => array (99, 74, 101, 114),
+    'cost'  => 210000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_CHAOS, T_RACE_NURGLE, T_RACE_CHAOS_PACT)
+);
+// Added in BB2016 DZ2
+$stars['Glart Smashrip Sr.'] = array (
+    'id'    => -66,
+    'ma'    => 5,
+    'st'    => 4,
+    'ag'    => 2,
+    'av'    => 8,
+    'def'   => array (99, 1, 71, 51, 53, 57),
+    'cost'  => 190000,
+    'icon'  => 'star',
+    'races' => array(19, 23)
+);
+$stars['Lucien Swift (+ Valen Swift)'] = array (
+    'id'    => -67,
+    'ma'    => 7,
+    'st'    => 3,
+    'ag'    => 4,
+    'av'    => 8,
+    'def'   => array (99, 1, 54, 13),
+    'cost'  => 390000,
+    'icon'  => 'star',
+    'races' => array(5, 8, 20)
+);
+$stars['Valen Swift (included with Lucien Swift)'] = array (
+    'id'    => -68,
+    'ma'    => 7,
+    'st'    => 3,
+    'ag'    => 5,
+    'av'    => 7,
+    'def'   => array (99, 40, 44, 45, 46, 12),
+    'cost'  => 0,
+    'icon'  => 'star',
+    'races' => array(5, 8, 20)
+);
+$stars['Kreek Rustgouger'] = array (
+    'id'    => -69,
+    'ma'    => 5,
+    'st'    => 7,
+    'ag'    => 2,
+    'av'    => 9,
+    'def'   => array (99, 91, 54, 100, 76, 105),
+    'cost'  => 130000,
+    'icon'  => 'star',
+    'races' => array(19, 23)
+);
+$stars['Bo Gallante'] = array (
+    'id'    => -70,
+    'ma'    => 8,
+    'st'    => 3,
+    'ag'    => 4,
+    'av'    => 7,
+    'def'   => array (99, 23, 26, 28, 29),
+    'cost'  => 160000,
+    'icon'  => 'star',
+    'races' => array(8)
+);
+$stars['Karla von Kill'] = array (
+    'id'    => -71,
+    'ma'    => 6,
+    'st'    => 4,
+    'ag'    => 3,
+    'av'    => 8,
+    'def'   => array (99, 1, 23, 2, 24),
+    'cost'  => 220000,
+    'icon'  => 'star',
+    'races' => array(0, 7, 9, 14)
+);
+$stars['Madcap Miggs'] = array (
+    'id'    => -72,
+    'ma'    => 6,
+    'st'    => 4,
+    'ag'    => 3,
+    'av'    => 8,
+    'def'   => array (99, 50, 71, 25, 100, 79, 112),
+    'cost'  => 170000,
+    'icon'  => 'star',
+    'races' => array(6, 23)
+);
+$stars['Kari Coldsteel'] = array (
+    'id'    => -73,
+    'ma'    => 6,
+    'st'    => 2,
+    'ag'    => 3,
+    'av'    => 7,
+    'def'   => array (99, 1, 2, 5),
+    'cost'  => 50000,
+    'icon'  => 'star',
+    'races' => array(0, 4, 9, 14)
+);
+// Added in BB2016 Spike! #1
+$stars['Withergrasp Doubledrool'] = array (
+    'id'    => -74,
+    'ma'    => 6,
+    'st'    => 3,
+    'ag'    => 3,
+    'av'    => 8,
+    'def'   => array (99, 76, 13, 77, 78, 14),
+    'cost'  => 170000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_CHAOS, T_RACE_CHAOS_PACT, T_RACE_NURGLE),
+);
+$stars['Gobbler Grimlich'] = array (
+    'id'    => -75,
+    'ma'    => 5,
+    'st'    => 4,
+    'ag'    => 2,
+    'av'    => 9,
+    'def'   => array (99, 70, 72, 25, 114, 103, 77, 79),
+    'cost'  => 230000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_CHAOS, T_RACE_CHAOS_PACT, T_RACE_UNDERWORLD),
+);
+$stars['Scyla Anfingrimm'] = array (
+    'id'    => -76,
+    'ma'    => 5,
+    'st'    => 5,
+    'ag'    => 1,
+    'av'    => 9,
+    'def'   => array (99, 71, 5, 76, 59, 112),
+    'cost'  => 250000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_CHAOS, T_RACE_NORSE),
+);

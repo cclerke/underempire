@@ -2029,6 +2029,9 @@ $skillarray	= array (
 		110 => 'Throw Team-Mate',
 		111 => 'Titchy',
 		112 => 'Wild Animal',
+		114 => 'Monstrous Mouth',
+		115 => 'Timmm-ber',
+		116 => 'Weeping Blades',
         130 => 'Swoop'
 	),
 );
