@@ -713,3 +713,106 @@ $stars['Scyla Anfingrimm'] = array (
     'icon'  => 'star',
     'races' => array(T_RACE_CHAOS, T_RACE_NORSE),
 );
+// Added in BB2016 Spike! #2
+$stars['Asperon Thorn'] = array (
+    'id'    => -77,
+    'ma'    => 6,
+    'st'    => 3,
+    'ag'    => 4,
+    'av'    => 8,
+    'def'   => array (99, 45, 46, 12, 7, 42),
+    'cost'  => 160000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_DARK_ELF, T_RACE_ELF, T_RACE_HIGH_ELF),
+);
+$stars['Elijah Doom'] = array (
+    'id'    => -78,
+    'ma'    => 6,
+    'st'    => 3,
+    'ag'    => 4,
+    'av'    => 8,
+    'def'   => array (99, 14, 4, 52, 57),
+    'cost'  => 190000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_DARK_ELF, T_RACE_ELF),
+);
+$stars['Kiroth Krakeneye'] = array (
+    'id'    => -79,
+    'ma'    => 7,
+    'st'    => 3,
+    'ag'    => 4,
+    'av'    => 8,
+    'def'   => array (99, 72, 74, 77, 8, 13),
+    'cost'  => 170000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_DARK_ELF, T_RACE_ELF),
+);
+$stars['Mordrix Hex'] = array (
+    'id'    => -80,
+    'ma'    => 7,
+    'st'    => 3,
+    'ag'    => 4,
+    'av'    => 7,
+    'def'   => array (99, 1, 23, 2, 5, 54, 4),
+    'cost'  => 230000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_DARK_ELF),
+);
+$stars['Jeremiah Kool'] = array (
+    'id'    => -81,
+    'ma'    => 8,
+    'st'    => 3,
+    'ag'    => 5,
+    'av'    => 8,
+    'def'   => array (99, 1, 23, 41, 44, 45, 21, 26, 7),
+    'cost'  => 390000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_DARK_ELF),
+);
+// Added in BB2016 Spike! #3
+$stars['Bulla Shardhorn'] = array (
+    'id'    => -82,
+    'ma'    => 6,
+    'st'    => 3,
+    'ag'    => 3,
+    'av'    => 8,
+    'def'   => array (99, 75, 1, 78, 73, 74, 101, 103, 106),
+    'cost'  => 230000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_NURGLE),
+);
+$stars['Tolly Glockfinger'] = array (
+    'id'    => -83,
+    'ma'    => 3,
+    'st'    => 7,
+    'ag'    => 2,
+    'av'    => 9,
+    'def'   => array (99, 91, 72, 74, 57, 100, 105, 101),
+    'cost'  => 110000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_NURGLE),
+);
+
+// Added for Simyin (not official)
+$stars['Furious George'] = array (
+    'id'    => -200,
+    'ma'    => 7,
+    'st'    => 3,
+    'ag'    => 3,
+    'av'    => 7,
+    'def'   => array (99, 8, 11, 14, 20, 23, 73),
+    'cost'  => 170000,
+    'icon'  => 'star',
+    'races' => array(26),
+);
+$stars['King Boombastic'] = array (
+    'id'    => -201,
+    'ma'    => 6,
+    'st'    => 5,
+    'ag'    => 1,
+    'av'    => 9,
+    'def'   => array (99, 50, 51, 53, 54, 112),
+    'cost'  => 270000,
+    'icon'  => 'star',
+    'races' => array(26),
+);
