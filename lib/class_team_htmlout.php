@@ -939,6 +939,10 @@ private function _actionBoxes($ALLOW_EDIT, $players)
                     <td><?php echo $team->cheerleaders; ?></td>
                 </tr>
                 <tr>
+                    <td><?php echo $lng->getTrn('common/players')?></td>
+                    <td><?php echo $team->active_players . '/' . $team->total_players; ?></td>
+                </tr>
+                <tr>
                     <td colspan="2"><a href="<?php echo urlcompile(T_URL_PROFILE,T_OBJ_TEAM,$this->team_id,false,false) . '&amp;subsec=offseason'; ?>">Offseason Management</a></td>
                 </tr>
                 <tr>
@@ -2097,6 +2101,10 @@ private function _offseason($ALLOW_EDIT, $players)
                         <td id="displayTV"><?php echo $team->tv/1000 . 'k'; ?></td>
                     </tr>
                     <tr>
+                        <td colspan=3>Funding</td>
+                        <td id="displayFunding"><?php echo $offseason_funding/1000 . 'k'; ?></td>
+                    </tr>
+                    <tr>
                         <td colspan=3><?php echo $lng->getTrn('matches/report/treas')?></td>
                         <td id="displayTreasury"><?php echo $offseason_treasury/1000 . 'k'; ?></td>
                     </tr>
@@ -2362,7 +2370,7 @@ private function _offseason($ALLOW_EDIT, $players)
         }
 
         function updateTreasury() {
-            // Update remaining offseason treasury
+            // Update remaining off-season treasury
             var funding = $('#initialTreasury').val();
             var costs = 0;
 

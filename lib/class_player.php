@@ -107,6 +107,8 @@ class Player
     public $is_mng              = false;
     public $is_journeyman       = false;
     public $is_used_journeyman  = false;
+    public $on_roster           = false;
+    public $is_active           = false;
 
     // Others
     public $icon = "";
@@ -157,6 +159,8 @@ class Player
         $this->is_sold              = (bool) $this->date_sold;
         $this->is_journeyman        = ($this->type == PLAYER_TYPE_JOURNEY);
         $this->is_journeyman_used   = ($this->type == PLAYER_TYPE_JOURNEY) && ($this->mv_played > 0);
+        $this->on_roster            = !($this->is_dead || $this->is_sold || $this->is_journeyman_used);
+        $this->is_active            = !($this->is_dead || $this->is_mng || $this->is_sold || $this->is_journeyman_used);
 
         /*
             Misc
@@ -168,7 +172,7 @@ class Player
             $this->name = 'Unnamed';
         }
 
-        if ($this->type == PLAYER_TYPE_JOURNEY) { # Check if player is journeyman like this - don't assume setStatusses() has ben called setting $this->is_journeyman.
+        if ($this->type == PLAYER_TYPE_JOURNEY) { # Check if player is journeyman like this - don't assume setStatuses() has been called setting $this->is_journeyman.
             $this->position .= ' [J]';
             $this->def_skills[] = 99; # Loner.
         }

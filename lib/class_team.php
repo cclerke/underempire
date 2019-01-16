@@ -43,6 +43,8 @@ class Team
     public $rerolls           = 0;
     public $ass_coaches       = 0;
     public $cheerleaders      = 0;
+    public $total_players     = 0;
+    public $active_players    = 0;
     public $rdy               = 1; // Ready bool.
     public $imported          = false;
     public $is_retired        = 0;
@@ -118,7 +120,10 @@ class Team
         $result = mysql_query("SELECT player_id FROM players WHERE owned_by_team_id = $this->team_id ORDER BY nr ASC, name ASC");
         if (mysql_num_rows($result) > 0) {
             while ($row = mysql_fetch_assoc($result)) {
-                array_push($this->_players, new Player($row['player_id']));
+                $p = new Player($row['player_id']);
+                array_push($this->_players, $p);
+                if ($p->on_roster) $this->total_players++;
+                if ($p->is_active) $this->active_players++;
             }
         }
         return $this->_players;
@@ -456,7 +461,7 @@ class Team
                   FROM matches
                   WHERE f_tour_id IN (
                     SELECT tournament_id FROM season_tournaments WHERE season_id = $this->current_season
-                  ) AND (team1_id = $this->team_id OR team2_id = $this->team_id) ";
+                  ) AND (team1_id = $this->team_id OR team2_id = $this->team_id) AND date_played IS NOT NULL";
         $result = mysql_query($query);
 
         if (!$result || mysql_num_rows($result) == 0) {
