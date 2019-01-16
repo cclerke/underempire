@@ -792,6 +792,84 @@ $stars['Tolly Glockfinger'] = array (
     'icon'  => 'star',
     'races' => array(T_RACE_NURGLE),
 );
+// Added in BB2016 Spike! #4
+$stars['G\'Ral Blodschüker'] = array (
+    'id'    => -84,
+    'ma'    => 7,
+    'st'    => 3,
+    'ag'    => 3,
+    'av'    => 7,
+    'def'   => array (99, 14, 20, 23, 29),
+    'cost'  => 160000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_NECROMANTIC, T_RACE_UNDEAD, T_RACE_VAMPIRE),
+);
+$stars['Bryce Cambuel'] = array (
+    'id'    => -85,
+    'ma'    => 5,
+    'st'    => 3,
+    'ag'    => 2,
+    'av'    => 8,
+    'def'   => array (99, 57, 59, 95, 105, 103),
+    'cost'  => 130000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_KHEMRI, T_RACE_UNDEAD),
+);
+$stars['Ivan Deathshroud'] = array (
+    'id'    => -86,
+    'ma'    => 6,
+    'st'    => 4,
+    'ag'    => 2,
+    'av'    => 8,
+    'def'   => array (99, 1, 11, 13, 53, 72, 103),
+    'cost'  => 230000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_KHEMRI, T_RACE_NECROMANTIC, T_RACE_UNDEAD),
+);
+$stars['Skrull Halfheight'] = array (
+    'id'    => -87,
+    'ma'    => 6,
+    'st'    => 3,
+    'ag'    => 3,
+    'av'    => 8,
+    'def'   => array (99, 12, 40, 44, 45, 59, 103),
+    'cost'  => 190000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_KHEMRI, T_RACE_UNDEAD),
+);
+$stars['Rick Bupkeis'] = array (
+    'id'    => -88,
+    'ma'    => 4,
+    'st'    => 3,
+    'ag'    => 2,
+    'av'    => 8,
+    'def'   => array (99, 3, 27, 103),
+    'cost'  => 110000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_NECROMANTIC, T_RACE_UNDEAD),
+);
+$stars['Throttlesnot'] = array (
+    'id'    => -89,
+    'ma'    => 6,
+    'st'    => 2,
+    'ag'    => 3,
+    'av'    => 7,
+    'def'   => array (99, 3, 23, 25, 106, 108, 103),
+    'cost'  => 100000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_NECROMANTIC, T_RACE_UNDEAD),
+);
+$stars['Gretchen Wächter'] = array (
+    'id'    => -90,
+    'ma'    => 7,
+    'st'    => 3,
+    'ag'    => 4,
+    'av'    => 8,
+    'def'   => array (99, 23, 24, 26, 10, 72, 74, 100, 103),
+    'cost'  => 280000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_NECROMANTIC, T_RACE_UNDEAD, T_RACE_VAMPIRE),
+);
 
 // Added for Simyin (not official)
 $stars['Furious George'] = array (
