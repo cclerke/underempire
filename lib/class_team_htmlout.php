@@ -375,6 +375,7 @@ private function _roster($ALLOW_EDIT, $DETAILED, $players)
         $p->skills   = '<small>'.$p->getSkillsStr(true).'</small>';
         $p->injs     = $p->getInjsStr(true);
         $p->position = "<table style='border-spacing:0px;'><tr><td><img align='left' src='$p->icon' alt='player avatar'></td><td>".$lng->getTrn("position/".strtolower($lng->FilterPosition($p->position)))."</td></tr></table>";
+        $p->season   = ordinal($p->season);
 
         if ($DETAILED) {
             $p->mv_cas = "$p->mv_bh/$p->mv_si/$p->mv_ki";
@@ -512,6 +513,7 @@ private function _roster($ALLOW_EDIT, $DETAILED, $players)
         'av'        => array('desc' => 'Av'),
         'skills'    => array('desc' => $lng->getTrn('common/skills'), 'nosort' => true),
         'injs'      => array('desc' => $lng->getTrn('common/injs'), 'nosort' => true),
+        'season'    => array('desc' => $lng->getTrn('common/season')),
         'mv_cp'     => array('desc' => 'Cp'),
         'mv_td'     => array('desc' => 'Td'),
         'mv_intcpt' => array('desc' => 'Int'),
