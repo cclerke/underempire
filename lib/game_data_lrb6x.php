@@ -37,7 +37,7 @@ $DEA['Goblin']['players']['Bombardier']['def'] = array (93, 23, 105, 108);
 $DEA['Goblin']['players']['Looney']['def'] = array (95, 105, 108);
 $DEA['Goblin']['players']['Pogoer']['def'] = array (23, 25, 108, 79);
 $DEA['Goblin']['players']['Pogoer']['cost'] = 70000;
-$DEA['Halfling']['players']['Treeman']['def'] = array (54, 57, 58, 109, 59, 110);
+$DEA['Halfling']['players']['Treeman']['def'] = array (54, 57, 58, 109, 59, 110, 115);
 $DEA['Khemri']['players']['Skeleton']['cost'] = 40000;
 $DEA['Khemri']['players']['Skeleton']['def'] = array (103, 59);
 $DEA['Khemri']['players']['Tomb Guardian'] = $DEA['Khemri']['players']['Mummy'];
@@ -869,6 +869,62 @@ $stars['Gretchen Wächter'] = array (
     'cost'  => 280000,
     'icon'  => 'star',
     'races' => array(T_RACE_NECROMANTIC, T_RACE_UNDEAD, T_RACE_VAMPIRE),
+);
+// Added in BB2016 Spike! #5
+$stars['Neddley Verucca'] = array (
+    'id'    => -91,
+    'ma'    => 5,
+    'st'    => 2,
+    'ag'    => 3,
+    'av'    => 6,
+    'def'   => array (99, 23, 108, 25, 79, 106, 105),
+    'cost'  => 70000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_HALFLING),
+);
+$stars['Cindy Piewhistle'] = array (
+    'id'    => -92,
+    'ma'    => 5,
+    'st'    => 2,
+    'ag'    => 3,
+    'av'    => 6,
+    'def'   => array (99, 23, 108, 93, 40, 105),
+    'cost'  => 50000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_HALFLING),
+);
+$stars['Rumbelow Sheepskin'] = array (
+    'id'    => -93,
+    'ma'    => 6,
+    'st'    => 3,
+    'ag'    => 3,
+    'av'    => 7,
+    'def'   => array (99, 1, 75, 13, 53, 100, 59),
+    'cost'  => 170000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_HALFLING),
+);
+$stars['Big Jobo Hairyfoot'] = array (
+    'id'    => -94,
+    'ma'    => 4,
+    'st'    => 3,
+    'ag'    => 2,
+    'av'    => 8,
+    'def'   => array (99, 13, 14, 3, 57, 108),
+    'cost'  => 120000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_HALFLING, T_RACE_OGRE),
+);
+$stars['Captain Colander'] = array (
+    'id'    => -95,
+    'ma'    => 6,
+    'st'    => 2,
+    'ag'    => 3,
+    'av'    => 7,
+    'def'   => array (99, 23, 108, 104, 20, 24, 26, 4, 72, 103),
+    'cost'  => 100000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_HALFLING),
 );
 
 // Added for Simyin (not official)

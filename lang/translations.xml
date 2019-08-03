@@ -593,6 +593,7 @@ For example, english is in <en-GB>, french in <fr-FR>, .......
   <troll>Troll</troll>
 
   <halfling>Halfling</halfling>
+  <hefty>Hefty</hefty>
   <treeman>Treeman</treeman>
 
   <ogre>Ogre</ogre>
@@ -825,6 +826,11 @@ For example, english is in <en-GB>, french in <fr-FR>, .......
     <rickbupkeis>Rick Bupkeis</rickbupkeis>
     <throttlesnot>Throttlesnot</throttlesnot>
     <gretchenwächter>Gretchen Wächter</gretchenwächter>
+    <neddleyverruca>Neddley Verucca</neddleyverruca>
+    <cindypiewhistle>Cindy Piewhistle</cindypiewhistle>
+    <rumbelowsheepskin>Rumbelow Sheepskin</rumbelowsheepskin>
+    <bigjobohairyfoot>Big Jobo Hairyfoot</bigjobohairyfoot>
+    <captaincolander>Captain Colander</captaincolander>
 
     <furiousgeorge>Furious George</furiousgeorge>
     <kingboombastic>King Boombastic</kingboombastic>
