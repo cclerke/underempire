@@ -926,6 +926,62 @@ $stars['Captain Colander'] = array (
     'icon'  => 'star',
     'races' => array(T_RACE_HALFLING),
 );
+// Added in BB2016 Spike! #6
+$stars['Gloriel Summerbloom'] = array (
+    'id'    => -96,
+    'ma'    => 7,
+    'st'    => 2,
+    'ag'    => 4,
+    'av'    => 7,
+    'def'   => array (99, 45, 40, 12, 23, 26),
+    'cost'  => 160000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_WOOD_ELF),
+);
+$stars['Swiftvine Glimmershard'] = array (
+    'id'    => -97,
+    'ma'    => 7,
+    'st'    => 2,
+    'ag'    => 3,
+    'av'    => 6,
+    'def'   => array (99, 26, 106, 108, 72, 4),
+    'cost'  => 130000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_WOOD_ELF),
+);
+$stars['Maple Highgrove'] = array (
+    'id'    => -98,
+    'ma'    => 3,
+    'st'    => 5,
+    'ag'    => 1,
+    'av'    => 10,
+    'def'   => array (99, 51, 54, 57, 77, 59),
+    'cost'  => 300000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_WOOD_ELF),
+);
+$stars['Zolcath the Zoat'] = array (
+    'id'    => -99,
+    'ma'    => 5,
+    'st'    => 5,
+    'ag'    => 2,
+    'av'    => 9,
+    'def'   => array (99, 53, 54, 29, 72, 76, 103),
+    'cost'  => 280000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_AMAZON, T_RACE_LIZARDMAN, T_RACE_WOOD_ELF),
+);
+$stars['Curnoth Darkwold'] = array (
+    'id'    => -100,
+    'ma'    => 7,
+    'st'    => 3,
+    'ag'    => 4,
+    'av'    => 7,
+    'def'   => array (99, 14, 23, 5, 25, 24),
+    'cost'  => 240000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_WOOD_ELF),
+);
 
 // Added for Simyin (not official)
 $stars['Furious George'] = array (
