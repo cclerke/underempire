@@ -982,6 +982,51 @@ $stars['Curnoth Darkwold'] = array (
     'icon'  => 'star',
     'races' => array(T_RACE_WOOD_ELF),
 );
+// Added in BB2016 Spike! #7
+$stars['Anqi Panqi'] = array (
+    'id'    => -101,
+    'ma'    => 7,
+    'st'    => 4,
+    'ag'    => 1,
+    'av'    => 9,
+    'def'   => array (99, 1, 51, 57),
+    'cost'  => 210000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_LIZARDMAN, T_RACE_SLANN),
+);
+$stars['Drull (+ Dribl)'] = array (
+    'id'    => -102,
+    'ma'    => 8,
+    'st'    => 2,
+    'ag'    => 3,
+    'av'    => 7,
+    'def'   => array (99, 23, 108, 26, 106),
+    'cost'  => 190000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_LIZARDMAN, T_RACE_SLANN)
+);
+$stars['Dribl (included with Drull)'] = array (
+    'id'    => -103,
+    'ma'    => 8,
+    'st'    => 2,
+    'ag'    => 3,
+    'av'    => 7,
+    'def'   => array (99, 23, 108, 26, 3, 27),
+    'cost'  => 0,
+    'icon'  => 'star',
+    'races' => array(T_RACE_LIZARDMAN, T_RACE_SLANN)
+);
+$stars['Glotl Stop'] = array (
+    'id'    => -104,
+    'ma'    => 6,
+    'st'    => 6,
+    'ag'    => 1,
+    'av'    => 9,
+    'def'   => array (99, 112, 5, 54, 56, 76, 59),
+    'cost'  => 360000,
+    'icon'  => 'star',
+    'races' => array(T_RACE_AMAZON, T_RACE_LIZARDMAN, T_RACE_SLANN),
+);
 
 // Added for Simyin (not official)
 $stars['Furious George'] = array (

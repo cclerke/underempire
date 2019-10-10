@@ -837,7 +837,20 @@ $DEA = array (
 				'cost'			=> 140000,
 				'icon'			=> 'kroxigor1',
 			    'pos_id'        => 112,
-			)
+			),
+            'Chameleon'	=> array (
+                'ma'        	=> 7,
+                'st'        	=> 2,
+                'ag'        	=> 3,
+                'av'        	=> 7,
+                'def'	    => array (23, 108, 8, 10),
+                'norm'		=> array ('A'),
+                'doub'		=> array ('G', 'S', 'P'),
+                'qty'			=> 2,
+                'cost'			=> 70000,
+                'icon'			=> 'lmskink1',
+                'pos_id'        => 113,
+            )
 		)
 	),
 
@@ -1540,7 +1553,7 @@ $stars = array(
        'st'            => 7,
        'ag'            => 1,
        'av'            => 10,
-       'def'    => array (99, 1, 54, 57, 58, 59, 110),
+       'def'    => array (99, 1, 54, 57, 58, 59, 110, 115),
        'cost'          => 250000,
        'icon'          => 'star',
        'races'         => array(7),

@@ -609,6 +609,7 @@ For example, english is in <en-GB>, french in <fr-FR>, .......
   <skink>Skink</skink>
   <saurus>Saurus</saurus>
   <kroxigor>Kroxigor</kroxigor>
+  <chameleon>Chameleon</chameleon>
 
   <blackorcblocker>Black Orc Blocker</blackorcblocker>
 
@@ -836,6 +837,10 @@ For example, english is in <en-GB>, french in <fr-FR>, .......
     <maplehighgrove>Maple Highgrove</maplehighgrove>
     <zolcaththezoat>Zolcath the Zoat</zolcaththezoat>
     <curnothdarkwold>Curnoth Darkwold</curnothdarkwold>
+    <anqipanqi>Anqi Panqi</anqipanqi>
+    <drulldribl>Drull (with Dribl)</drulldribl>
+    <driblincludedwithdrull>Dribl (included with Drull)</driblincludedwithdrull>
+    <glotlstop>Glotl Stop</glotlstop>
 
     <furiousgeorge>Furious George</furiousgeorge>
     <kingboombastic>King Boombastic</kingboombastic>
