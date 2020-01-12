@@ -1179,7 +1179,7 @@ $DEA = array (
  				'st'        	=> 1,
  				'ag'        	=> 3,
  				'av'        	=> 5,
- 				'def'	    => array (23, 104, 26, 108, 111),
+ 				'def'	    => array (23, 104, 26, 108, 111, 131),
  				'norm'		=> array ('A'),
  				'doub'		=> array ('G', 'S', 'P'),
  				'qty'			=> 16,
@@ -1199,8 +1199,20 @@ $DEA = array (
 				'cost'			=> 140000,
 				'icon'			=> 'ogre1',
 			    'pos_id'        => 161,
-			)
-
+			),
+            'Runt Punter'	=> array (
+                'ma'        	=> 5,
+                'st'        	=> 5,
+                'ag'        	=> 2,
+                'av'        	=> 9,
+                'def'	    => array (94, 54, 59, 132),
+                'norm'		=> array ('S', 'P'),
+                'doub'		=> array ('G','A'),
+                'qty'			=> 1,
+                'cost'			=> 150000,
+                'icon'			=> 'ogre1',
+                'pos_id'        => 162,
+            )
 		)
 	),
 
@@ -2071,7 +2083,9 @@ $skillarray	= array (
 		114 => 'Monstrous Mouth',
 		115 => 'Timmm-ber',
 		116 => 'Weeping Blades',
-        130 => 'Swoop'
+        130 => 'Swoop',
+        131 => 'Disposable',
+        132 => 'Kick Team-Mate'
 	),
 );
 

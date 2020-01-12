@@ -704,7 +704,7 @@ public static function installProcsAndFuncs($install = true)
         BEGIN
             UPDATE mv_teams SET pts = getPTS(f_tid, f_trid);
         END',
-        
+
         /*
          *  Sync tour points (PTS)
          */
@@ -966,7 +966,7 @@ public static function installProcsAndFuncs($install = true)
                 SELECT cid, trid,did,lid, '.$common_es_fields.'
                 FROM match_data_es
                 WHERE match_data_es.f_cid = cid AND match_data_es.f_trid = trid;
-                
+
             /* Empty MV entry? => Delete it */
             SELECT mv_coaches.played INTO num_played FROM mv_coaches WHERE mv_coaches.f_cid = cid AND mv_coaches.f_trid = trid;
             IF num_played = 0 THEN
@@ -984,7 +984,7 @@ public static function installProcsAndFuncs($install = true)
         BEGIN
             DECLARE did '.$CT_cols[T_NODE_DIVISION].' DEFAULT NULL;
             DECLARE lid '.$CT_cols[T_NODE_LEAGUE].' DEFAULT NULL;
-            DECLARE num_played '.$mv_commoncols['played'].' DEFAULT 0;            
+            DECLARE num_played '.$mv_commoncols['played'].' DEFAULT 0;
             CALL getTourParentNodes(trid, did, lid);
 
             DELETE FROM mv_races WHERE f_rid = rid AND f_trid = trid;
@@ -1094,8 +1094,9 @@ public static function installProcsAndFuncs($install = true)
         BEGIN
             DECLARE ach_ma,ach_st,ach_ag,ach_av, def_ma,def_st,def_ag,def_av '.$CT_cols['chr'].' DEFAULT 0;
             DECLARE cnt_skills_norm, cnt_skills_doub TINYINT UNSIGNED;
-            DECLARE extra_val '.$CT_cols['pv'].';
+            DECLARE cost, extra_val '.$CT_cols['pv'].';
             DECLARE f_pos_id '.$CT_cols['pos_id'].';
+            DECLARE is_disposable TINYINT UNSIGNED;
 
             SELECT
                 players.f_pos_id, players.extra_val, players.ach_ma, players.ach_st, players.ach_ag, players.ach_av
@@ -1105,6 +1106,7 @@ public static function installProcsAndFuncs($install = true)
 
             SET cnt_skills_norm = (SELECT COUNT(*) FROM players_skills WHERE f_pid = pid AND type = "N");
             SET cnt_skills_doub = (SELECT COUNT(*) FROM players_skills WHERE f_pid = pid AND type = "D");
+            SET is_disposable   = (SELECT COUNT(*) FROM players_skills WHERE f_pid = pid AND f_skill_id = 131);
 
             SELECT
                 IFNULL(SUM(IF(inj = '.NI.', 1, 0) + IF(agn1 = '.NI.', 1, 0) + IF(agn2 = '.NI.', 1, 0)), 0),
@@ -1116,7 +1118,8 @@ public static function installProcsAndFuncs($install = true)
                 inj_ni,inj_ma,inj_av,inj_ag,inj_st
             FROM match_data WHERE f_player_id = pid;
 
-            SET value = (SELECT cost FROM game_data_players WHERE game_data_players.pos_id = f_pos_id)
+            SET cost = (SELECT cost FROM game_data_players WHERE game_data_players.pos_id = f_pos_id);
+            SET value = cost
                 + (ach_ma + ach_av) * 30000
                 + ach_ag            * 40000
                 + ach_st            * 50000
@@ -1126,7 +1129,8 @@ public static function installProcsAndFuncs($install = true)
                 - inj_ma * '.$rules['value_reduction_ma'].'
                 - inj_av * '.$rules['value_reduction_av'].'
                 - inj_ag * '.$rules['value_reduction_ag'].'
-                - inj_st * '.$rules['value_reduction_st'].';
+                - inj_st * '.$rules['value_reduction_st'].'
+                - is_disposable * cost;
 
 
             SELECT

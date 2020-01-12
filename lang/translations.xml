@@ -635,6 +635,7 @@ For example, english is in <en-GB>, french in <fr-FR>, .......
   <warpstonetroll>Warp Stone Troll</warpstonetroll>
 
   <snotling>Snotling</snotling>
+  <runtpunter>Runt Punter</runtpunter>
 
   <thrall>Thrall</thrall>
   <vampire>Vampire</vampire>
@@ -736,6 +737,8 @@ For example, english is in <en-GB>, french in <fr-FR>, .......
   <timmmber>Timmm-ber</timmmber>
   <weepingblades>Weeping Blades</weepingblades>
   <swoop>Swoop</swoop>
+  <disposable>Disposable</disposable>
+  <kickteammate>Kick Team-Mate</kickteammate>
 </skill>
 
 <starplayer>
